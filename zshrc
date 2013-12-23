@@ -8,9 +8,6 @@ source ~/.bashrc
 ### VARIABLES
 SAVEHIST=10000
 
-### PS1
-prompt clint
-
 ### Special zsh
 zstyle :compinstall filename '~/.zshrc'
 
@@ -44,3 +41,6 @@ setopt nomatch
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "${ZDOTDIR:-$HOME}/.zcompcache"
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+export PS1="%n@%m:%~%# "
+prompt bart
