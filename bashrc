@@ -25,6 +25,7 @@ if [[ ! $(locale charmap) =~ [Uu][Tt][Ff][-]?8 ]]; then
 fi
 
 ### VARIABLES
+unset LESS
 HISTFILE=~/.histfile
 HISTSIZE=10000
 VISUAL=vim
