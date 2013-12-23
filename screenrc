@@ -1,0 +1,43 @@
+### Keybindings
+## Remove some stupid / dangerous key bindings
+bind k
+bind ^k
+bind .
+bind ^\
+bind \\
+bind ^h
+bind h
+
+## I hate this in emacs:
+bind ^g
+
+## Make them better
+bind 'Q' quit
+bind 'K' kill
+bind 'I' login on
+bind 'O' login off
+bind '}' history
+
+### Options
+
+## No startup message thank you very much
+startup_message off
+
+## Visual bell overrides the lovely beeping
+vbell off
+
+## Changed C-a to C-\ since C-a is like the most used binding ever
+escape ^|\
+
+## XON/XOFF ruins my day
+stty -ixon
+
+## Some startup windows:
+screen -t editor 0 bash
+screen -t local 1 bash
+screen -t remote 2 bash
+
+#screen -t emacs 9 emacs -nw
+#screen -t irssi 9 irssi
+
+
