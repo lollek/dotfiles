@@ -8,19 +8,20 @@
 # If encoding is not en_US.UTF-8, try to set it
 utf8_regex="^en_US\.[Uu][Tt][Ff][-]?8$"
 if [[ ! $LANG =~ $utf8_regex ]]; then
-  test_lang=$(locale -a | egrep $utf8_regex)
-  if [[ ! -z $test_lang ]]; then
+  if test_lang=$(locale -a | grep -E $utf8_regex); then
     export LANG=$test_lang
   else
     echo -e "\033[1;33mEncoding Warning\033[0m"
     echo -e "Failed to change from $LANG to UTF-8"
   fi
+  unset test_lang
 fi
+unset utf8_regex
 
 # Check if charmap is UTF-8
-if [[ ! `locale charmap` =~ [Uu][Tt][Ff][-]?8 ]]; then
-  echo -e "\033[1;33mEncoding Warning\033[0m\
-    LANG is UTF-8, but charmap is `locale charmap`"
+if [[ ! $(locale charmap) =~ [Uu][Tt][Ff][-]?8 ]]; then
+  echo -e "\033[1;33mEncoding Warning\033[0m"
+  echo -e "LANG is UTF-8, but charmap is $(locale charmap)"
 fi
 
 ### VARIABLES
