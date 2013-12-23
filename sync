@@ -1,0 +1,25 @@
+#! /bin/bash
+
+cd $(dirname $BASH_SOURCE)
+
+for dotfilename in *; do
+  srcname="$(pwd)/$dotfilename"
+  dstname="$HOME/.$dotfilename"
+
+  if [[ -h "$dstname" ]]; then
+    \rm -v -- "${dstname}"
+    \ln -s -- "${srcname}" "${dstname}"
+  elif [[ -f "$dstname" ]]; then
+    \mv -v -- "${dstname}" "${dstname}.backup.$(date -I)"
+    \ln -s -- "${srcname}" "${dstname}"
+  elif [[ ! -e "$dstname" ]]; then
+    echo "$dstname does not exist. Skipping"
+  else
+    echo "$dstname has unknown filetype. Skipping"
+  fi
+done
+
+unset srcname
+unset dstname
+
+cd - 1>/dev/null
