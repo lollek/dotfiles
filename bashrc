@@ -4,6 +4,16 @@
 # Drop non-interactive shells
 [[ $- != *i* ]] && return
 
+# Export home-bin if it doesn't exist
+if ! echo $PATH | grep -E "$HOME/bin" &>/dev/null; then
+  export PATH=$PATH:$HOME/bin
+fi
+
+# Import bash-completion if they exist
+if [[ $SHELL == "/bin/bash" && -f /etc/bash_completion ]]; then
+  . /etc/bash_completion
+fi
+
 ### LOCALE
 # If encoding is not en_US.UTF-8, try to set it
 utf8_regex="^en_US\.[Uu][Tt][Ff][-]?8$"
