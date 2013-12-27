@@ -1,25 +1,29 @@
 #! /bin/bash
 
-cd $(dirname $BASH_SOURCE)
+_sync_dotfiles()
+{
+  cd $(dirname $BASH_SOURCE)
+  local syncfiles="bash_profile bashrc emacs gitconfig screenrc vimrc zshrc"
 
-for dotfilename in *; do
-  srcname="$(pwd)/$dotfilename"
-  dstname="$HOME/.$dotfilename"
+  for dotfilename in $syncfiles; do
+    local srcname="$(pwd)/$dotfilename"
+    local dstname="$HOME/.$dotfilename"
 
-  if [[ -h "$dstname" ]]; then
-    \rm -v -- "${dstname}"
+    echo "${dstname}:"
+
+    if [[ -h "$dstname" ]]; then
+      echo -en "\tRemoving ... "
+      \rm -- "${dstname}" && echo "[OK] "
+    elif [[ -e "$dstname" ]]; then
+      echo -en "\tMoving to ${dstname}.backup.$(date -I) ... "
+      \mv -- "${dstname}" "${dstname}.backup.$(date -I)" && echo "[OK]"
+    fi
+    echo -en "\tSymlinking -> ${srcname} ... "
     \ln -s -- "${srcname}" "${dstname}"
-  elif [[ -f "$dstname" ]]; then
-    \mv -v -- "${dstname}" "${dstname}.backup.$(date -I)"
-    \ln -s -- "${srcname}" "${dstname}"
-  elif [[ ! -e "$dstname" ]]; then
-    echo "$dstname does not exist. Skipping"
-  else
-    echo "$dstname has unknown filetype. Skipping"
-  fi
-done
+    echo "[OK]"
+  done
 
-unset srcname
-unset dstname
+  cd - 1>/dev/null
+}
 
-cd - 1>/dev/null
+_sync_dotfiles
