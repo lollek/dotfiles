@@ -4,9 +4,10 @@
 # Drop non-interactive shells
 [[ $- != *i* ]] && return
 
+### ENVIRONMENT SETUP
 # Export home-bin if it doesn't exist
-if ! echo $PATH | grep -E "$HOME/bin" &>/dev/null; then
-  export PATH=$PATH:$HOME/bin
+if [[ ! $PATH =~ "$HOME/bin" ]]; then
+  export PATH=$HOME/bin:$PATH
 fi
 
 # Import bash-completion if they exist
@@ -14,25 +15,27 @@ if [[ $SHELL == "/bin/bash" && -f /etc/bash_completion ]]; then
   . /etc/bash_completion
 fi
 
-### LOCALE
-# If encoding is not en_US.UTF-8, try to set it
-utf8_regex="^en_US\.[Uu][Tt][Ff][-]?8$"
-if [[ ! $LANG =~ $utf8_regex ]]; then
-  if test_lang=$(locale -a | grep -E $utf8_regex); then
-    export LANG=$test_lang
-  else
-    echo -e "\033[1;33mEncoding Warning\033[0m"
-    echo -e "Failed to change from $LANG to UTF-8"
+_check_locale()
+{
+  # If encoding is not en_US.UTF-8, try to set it
+  local utf8_regex="^en_US\.[Uu][Tt][Ff][-]?8$"
+  if [[ ! $LANG =~ $utf8_regex ]]; then
+    local test_lang
+    if test_lang=$(locale -a | grep -E $utf8_regex); then
+      export LANG=$test_lang
+    else
+      echo -e "\033[1;33mEncoding Warning\033[0m"
+      echo -e "Failed to change from $LANG to UTF-8"
+    fi
   fi
-  unset test_lang
-fi
-unset utf8_regex
 
-# Check if charmap is UTF-8
-if [[ ! $(locale charmap) =~ [Uu][Tt][Ff][-]?8 ]]; then
-  echo -e "\033[1;33mEncoding Warning\033[0m"
-  echo -e "LANG is UTF-8, but charmap is $(locale charmap)"
-fi
+  # Check if charmap is UTF-8
+  if [[ ! $(locale charmap) =~ [Uu][Tt][Ff][-]?8 ]]; then
+    echo -e "\033[1;33mEncoding Warning\033[0m"
+    echo -e "LANG is UTF-8, but charmap is $(locale charmap)"
+  fi
+}
+_check_locale
 
 ### VARIABLES
 unset LESS
@@ -69,8 +72,16 @@ case `uname` in
     ;;
 esac
 
-# Compiling
-alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
-alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
-alias g++11='g++ -std=c++11'
-alias clang++11='clang++ -std=c++11'
+# Special application aliases
+if command -v gcc &>/dev/null; then 
+  alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
+fi
+
+if command -v g++ &>/dev/null; then
+  alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
+  alias g++11='g++ -std=c++11'
+fi
+
+if command -v clang++ &>/dev/null; then
+  alias clang++11='clang++ -std=c++11'
+fi
