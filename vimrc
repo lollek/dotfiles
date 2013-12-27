@@ -10,6 +10,9 @@
 " properly set to work with the Vim-related packages available in Debian.
 runtime! debian.vim
 
+" Bash is standard for filetype=sh
+let g:is_bash=1
+
 set nocompatible
 set background=dark
 syntax on
