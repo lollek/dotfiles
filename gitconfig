@@ -1,6 +1,8 @@
 [user]
 	email = olle.kvarnstroem@gmail.com
 	name = Olle K
+[push]
+        default = current
 [core]
         editor = vim
 [color]
