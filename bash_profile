@@ -1,5 +1,9 @@
 # vim:set ft=sh:
 
+if [[ -f $HOME/.bash_settings ]]; then
+  . $HOME/.bash_settings
+fi
+
 # Start ssh-agent if support and it's not started by this user
 _start_ssh_agent()
 {
@@ -12,8 +16,11 @@ _start_ssh_agent()
     fi
   fi
 }
-_start_ssh_agent
 
-umask 022
+if [[ ! -z $START_SSH_AGENT ]]; then
+  _start_ssh_agent
+fi
 
-source .bashrc
+if [[ -f $HOME/.bashrc ]]; then
+  . $HOME/.bashrc
+fi
