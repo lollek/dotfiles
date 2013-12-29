@@ -73,15 +73,8 @@ case `uname` in
 esac
 
 # Special application aliases
-if command -v gcc &>/dev/null; then 
-  alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
-fi
-
-if command -v g++ &>/dev/null; then
-  alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
-  alias g++11='g++ -std=c++11'
-fi
-
-if command -v clang++ &>/dev/null; then
-  alias clang++11='clang++ -std=c++11'
-fi
+alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
+alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
+alias g++11='g++ -std=c++11'
+alias clang++11='clang++ -std=c++11'
+alias ghc='ghc --make -Wall'
