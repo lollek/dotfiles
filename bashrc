@@ -43,8 +43,14 @@ HISTFILE=~/.histfile
 HISTSIZE=10000
 VISUAL=vim
 EDITOR=vim
-PS1='\[\033[0;31m\]\h \[\033[0;34m\][\d \t] [\j jobs] [status $?] $(__git_ps1 "[git %s]")
+
+if command -v __git_ps1 &>/dev/null; then
+  PS1='\[\033[0;31m\]\h \[\033[0;34m\][\d \t] [\j jobs] [status $?] $(__git_ps1 "[git %s]")
 \[\033[0;33m\]\u@\s(\v) \w \$ \[\033[0m\]'
+else
+  PS1='\[\033[0;31m\]\h \[\033[0;34m\][\d \t] [\j jobs] [status $?]
+\[\033[0;33m\]\u@\s(\v) \w \$ \[\033[0m\]'
+fi
 
 ### ALIAS
 alias ..='cd ..'
