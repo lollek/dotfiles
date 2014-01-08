@@ -65,6 +65,8 @@ alias la='ls -A'
 alias l='ls -lh'
 alias ll='ls -alh'
 
+alias grep='grep --color=auto'
+
 case `uname` in
   Linux)
     alias ls='ls --color=auto --group-directories-first'
