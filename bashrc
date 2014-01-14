@@ -43,6 +43,7 @@ HISTFILE=~/.histfile
 HISTSIZE=10000
 VISUAL=vim
 EDITOR=vim
+PAGER=less
 
 if command -v __git_ps1 &>/dev/null; then
   PS1='\[\033[0;31m\]\h \[\033[0;34m\][\d \t] [\j jobs] [status $?] $(__git_ps1 "[git %s]")
@@ -74,6 +75,7 @@ case `uname` in
   SunOS)
     alias ls='ls --color=auto'
     alias emacs='emacs --color=always'
+    [[ $TERM == screen ]] && TERM=xterm
     ;;
   *BSD)
     alias ls='ls -G'
