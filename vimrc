@@ -61,6 +61,10 @@ imap <Right> <NOP>
 imap <Up>    <NOP>
 imap <Down>  <NOP>
 
+if filereadable(glob("~/.vim/autoload/pathogen.vim"))
+  execute pathogen#infect()
+endif
+
 """ Indenting and Filetypes:
 let g:is_bash=1 " Shell usually means bash
 filetype plugin indent on
