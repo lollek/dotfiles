@@ -20,9 +20,11 @@ set scrolloff=4                   " Tries to keep cursor a bit centered
 
 set ruler                         " Shows cursor position in lowerright corner
 set number                        " Show linenumber on the left side
+set cursorline                    " Underline current line
 set showcmd                       " Show (partial) command in status line.
 set wildmenu                      " Show many results when opening files and stuff
 set showmatch                     " Show matching brackets.
+set lazyredraw                    " Make vim not flush screen during e.g. macros
 
 """ Formatting
 set autoindent     " Automatic indent
