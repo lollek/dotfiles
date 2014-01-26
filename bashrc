@@ -17,22 +17,34 @@ fi
 
 _check_locale()
 {
-  # If encoding is not en_US.UTF-8, try to set it
-  local utf8_regex="^en_US\.[Uu][Tt][Ff][-]?8$"
-  if [[ ! $LANG =~ $utf8_regex ]]; then
-    local test_lang
-    if test_lang=$(locale -a | grep -E $utf8_regex); then
-      export LANG=$test_lang
-    else
+  local enc_warn re_utf8 re_us_utf8 test_lang
+  enc_warn=0
+  re_utf8="[Uu][Tt][Ff]-?8"
+  re_us_utf8="^en_US\.$re_utf8$"
+
+  # Try to set locale to UTF-8
+  if [[ ! $LANG =~ $re_us_utf8 ]]; then
+    if ! test_lang=$(locale -a | grep -E $re_us_utf8); then
+      enc_warn=1
       echo -e "\033[1;33mEncoding Warning\033[0m"
-      echo -e "Failed to change from $LANG to UTF-8"
+      echo -e "Could not find UTF-8 among available locales. Now set to $LANG"
+    else
+      export LANG=$test_lang
+      if [[ ! $LC_CTYPE =~ $re_us_utf8 ]]; then
+        if (( enc_warn == 0 )); then
+          enc_warn=1
+          echo -e "\033[1;33mEncoding Warning\033[0m"
+        fi
+        echo "Had to force set LC_ALL, encoding might not work"
+        export LC_ALL=$test_lang
+      fi
     fi
   fi
 
   # Check if charmap is UTF-8
-  if [[ ! $(locale charmap) =~ [Uu][Tt][Ff][-]?8 ]]; then
-    echo -e "\033[1;33mEncoding Warning\033[0m"
-    echo -e "LANG is UTF-8, but charmap is $(locale charmap)"
+  if [[ ! $(locale charmap) =~ $re_utf8 ]]; then
+    (( enc_warn )) || echo -e "\033[1;33mEncoding Warning\033[0m"
+    echo -e "LANG is $LANG, charmap is $(locale charmap)"
   fi
 }
 _check_locale
