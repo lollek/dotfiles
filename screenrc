@@ -20,12 +20,9 @@ bind '}' history
 bind 'o' only
 
 ### Options
-
-## No startup message thank you very much
-startup_message off
-
-## Visual bell overrides the lovely beeping
-vbell off
+startup_message off    # No startup message thank you very much
+vbell off              # Visual bell overrides the lovely beeping
+defutf8 on             # Try to force utf-8
 
 ## Changed C-a to C-\ since C-a is like the most used binding ever
 escape ^|\
