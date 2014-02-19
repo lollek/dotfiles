@@ -4,7 +4,8 @@ if [[ $PATH =~ "$HOME/bin" ]]; then
   export PATH=$HOME/bin:$PATH
 fi
 
-if [[ GIT=$(command -v git) ]]; then
+GIT=$(command -v git)
+if [[ ! -z $GIT ]]; then
   $GIT stash save -q
   $GIT pull -q
   $GIT stash pop -q
