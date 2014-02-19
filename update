@@ -5,9 +5,9 @@ if [[ $PATH =~ "$HOME/bin" ]]; then
 fi
 
 if [[ GIT=$(command -v git) ]]; then
-  $GIT stash save
-  $GIT pull
-  $GIT stash pop
+  $GIT stash save -q
+  $GIT pull -q
+  $GIT stash pop -q
 else
   echo "Could not find/exec git!"
 fi
