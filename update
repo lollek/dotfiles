@@ -1,0 +1,13 @@
+#! /bin/bash
+
+if [[ $PATH =~ "$HOME/bin" ]]; then
+  export PATH=$HOME/bin:$PATH
+fi
+
+if [[ GIT=$(command -v git) ]]; then
+  $GIT stash save
+  $GIT pull
+  $GIT stash pop
+else
+  echo "Could not find/exec git!"
+fi
