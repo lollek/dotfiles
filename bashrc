@@ -50,6 +50,7 @@ _check_locale()
 _check_locale
 
 ### VARIABLES
+set +o ignoreeof
 unset LESS
 HISTFILE=~/.histfile
 HISTSIZE=10000
