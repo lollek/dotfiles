@@ -58,6 +58,7 @@ VISUAL=vim
 EDITOR=vim
 PAGER=less
 
+stty sane
 stty stop undef
 stty start undef
 
