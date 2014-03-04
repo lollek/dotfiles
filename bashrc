@@ -1,10 +1,9 @@
-## Last Updated 2013-12-23
+## Last Updated 2013-03-04
 # Olle K bashrc
 
 # Drop non-interactive shells
 [[ $- != *i* ]] && return
 
-### ENVIRONMENT SETUP
 # Export home-bin if it doesn't exist
 if [[ ! $PATH =~ "$HOME/bin" ]]; then
   export PATH=$HOME/bin:$PATH
@@ -15,41 +14,37 @@ if [[ $SHELL == "/bin/bash" && -f /etc/bash_completion ]]; then
   . /etc/bash_completion
 fi
 
+# Try to set locale to en_US.UTF-8
 _check_locale()
 {
-  local enc_warn re_utf8 re_us_utf8 test_lang
-  enc_warn=0
+  local re_utf8 re_us_utf8 test_lang
   re_utf8="[Uu][Tt][Ff]-?8"
   re_us_utf8="^en_US\.$re_utf8$"
 
-  # Try to set locale to UTF-8
+  # Try to set locale
   if [[ ! $LANG =~ $re_us_utf8 ]]; then
     if ! test_lang=$(locale -a | grep -E $re_us_utf8); then
-      enc_warn=1
-      echo -e "\033[1;33mEncoding Warning\033[0m"
+      echo -e "\033[1;33mLocale Warning\033[0m"
       echo -e "Could not find UTF-8 among available locales. Now set to $LANG"
     else
       export LANG=$test_lang
       if [[ ! $LC_CTYPE =~ $re_us_utf8 ]]; then
-        if (( enc_warn == 0 )); then
-          enc_warn=1
-          echo -e "\033[1;33mEncoding Warning\033[0m"
-        fi
+        echo -e "\033[1;33mLocale Warning\033[0m"
         echo "Had to force set LC_ALL, encoding might not work"
         export LC_ALL=$test_lang
       fi
     fi
   fi
 
-  # Check if charmap is UTF-8
+  # Check charmap
   if [[ ! $(locale charmap) =~ $re_utf8 ]]; then
-    (( enc_warn )) || echo -e "\033[1;33mEncoding Warning\033[0m"
-    echo -e "LANG is $LANG, charmap is $(locale charmap)"
+    echo -e "\033[1;33mLocale Warning\033[0m"
+    echo -e "Charmap is $(locale charmap)"
   fi
 }
 _check_locale
 
-### VARIABLES
+# Variables
 set +o ignoreeof
 unset LESS
 HISTFILE=~/.histfile
@@ -58,6 +53,7 @@ VISUAL=vim
 EDITOR=vim
 PAGER=less
 
+# This has worked on all systems so far
 stty sane
 stty stop undef
 stty start undef
@@ -70,7 +66,7 @@ _set_ps1() {
 }
 _set_ps1
 
-### ALIAS
+# Aliases
 alias ..='cd ..'
 alias chmod='chmod -v'
 alias chown='chown -v'
@@ -82,7 +78,6 @@ alias rm='rm -v'
 alias la='ls -A'
 alias l='ls -lh'
 alias ll='ls -alh'
-
 alias grep='grep --color=auto'
 
 case `uname` in
@@ -105,6 +100,8 @@ alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
 alias g++11='g++ -std=c++11'
 alias clang++11='clang++ -std=c++11'
 alias ghc='ghc --make -Wall'
+
+youtube() { [[ -z $1 ]] || mplayer $(youtube-dl -g "$1") -vo null; }
 
 # Colored man-pages
 man() {
