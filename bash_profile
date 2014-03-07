@@ -10,7 +10,7 @@ if [[ ! -z $START_SSH_AGENT ]]; then
   {
     SSHAGENT=$(command -v ssh-agent)
     SSHAGENTARGS="-s"
-    if ! ps ux | grep [s]sh-agent &>/dev/null; then
+    if ! pgrep -xu $USER ssh-agent &>/dev/null; then
       if [[ -z "$SSH_AUTH_SOCK" && -x "$SSHAGENT" ]]; then
         eval "$($SSHAGENT $SSHAGENTARGS)"
         trap "kill $SSH_AGENT_PID" 0
