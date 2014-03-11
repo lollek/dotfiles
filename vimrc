@@ -52,6 +52,8 @@ set dir=~/.vim/backup          " Move .swaps here
 """ Extra commands
 " Press space to quit search:
 nnoremap <silent> <Space> :silent noh<Bar>echo<CR>
+" sudow does a sudo save
+cnoremap sudow w !sudo tee % >/dev/null
 
 " To keep me out of INSERT-mode
 map <Left>  <NOP>
