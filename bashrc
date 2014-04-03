@@ -94,14 +94,17 @@ case `uname` in
     ;;
 esac
 
+# Minifuns
+function pushtmp() { cd $(mktemp -d); }
+function poptmp() { rmdir $PWD && cd ->/dev/null; }
+function youtube() { [[ -z $1 ]] || mplayer $(youtube-dl -g "$1") -vo null; }
+
 # Special application aliases
 alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
 alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
 alias g++11='g++ -std=c++11'
 alias clang++11='clang++ -std=c++11'
 alias ghc='ghc --make -Wall'
-
-youtube() { [[ -z $1 ]] || mplayer $(youtube-dl -g "$1") -vo null; }
 
 # Colored man-pages
 man() {
