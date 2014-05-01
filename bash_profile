@@ -1,23 +1,23 @@
 # vim:set ft=sh:
+umask 022
 
-if [[ -f $HOME/.bash_settings ]]; then
-  . $HOME/.bash_settings
-fi
-
-if [[ ! -z $START_SSH_AGENT ]]; then
-  # Start ssh-agent if support and it's not started by this user
-  _start_ssh_agent()
-  {
-    SSHAGENT=$(command -v ssh-agent)
-    SSHAGENTARGS="-s"
-    if ! pgrep -xu $USER ssh-agent &>/dev/null; then
-      if [[ -z "$SSH_AUTH_SOCK" && -x "$SSHAGENT" ]]; then
-        eval "$($SSHAGENT $SSHAGENTARGS)"
-        trap "kill $SSH_AGENT_PID" 0
-      fi
+# Start ssh-agent if support and it's not started by this user
+_start_ssh_agent()
+{
+  SSHAGENT=$(command -v ssh-agent)
+  SSHAGENTARGS="-s"
+  if ! pgrep -xu $USER ssh-agent &>/dev/null; then
+    if [[ -z "$SSH_AUTH_SOCK" && -x "$SSHAGENT" ]]; then
+      eval "$($SSHAGENT $SSHAGENTARGS)"
+      trap "kill $SSH_AGENT_PID" 0
+      ssh-add
     fi
-  }
-  _start_ssh_agent
-fi
+  fi
+}
+#_start_ssh_agent
+
+# Set up environment
+# sudo setfont Uni3-Fixed13
+# sudo loadkeys ./us-intl.key
 
 source .bashrc
