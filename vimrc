@@ -48,6 +48,7 @@ set noswapfile                 " Remove swapfile when done
 set backupdir=~/.vim/backup    " Move backups here
 set backupcopy=yes             " Backups retain attributes
 set dir=~/.vim/backup          " Move .swaps here
+set viminfo=                   " Stop vim from saving crap settings
 
 """ Extra commands
 " Press space to quit search:
