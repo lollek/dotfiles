@@ -1,29 +1,30 @@
 #! /bin/bash
+set -e
 
-_sync_dotfiles()
-{
-  cd $(dirname $BASH_SOURCE)
-  local syncfiles="bash_profile bashrc emacs gitconfig screenrc vimrc zshrc"
+cd $(dirname $0)
 
-  for dotfilename in $syncfiles; do
-    local srcname="$(pwd)/$dotfilename"
-    local dstname="$HOME/.$dotfilename"
+syncfiles="bashrc emacs gitconfig screenrc vimrc zshrc"
+for dotfilename in $syncfiles; do
+  srcname="$PWD/$dotfilename"
+  dstname="$HOME/.$dotfilename"
 
-    echo "${dstname}:"
+  echo "${dstname}:"
 
-    if [[ -h "$dstname" ]]; then
-      echo -en "\tRemoving ... "
-      \rm -- "${dstname}" && echo "[OK] "
-    elif [[ -e "$dstname" ]]; then
-      echo -en "\tMoving to ${dstname}.backup.$(date -I) ... "
-      \mv -- "${dstname}" "${dstname}.backup.$(date -I)" && echo "[OK]"
-    fi
-    echo -en "\tSymlinking -> ${srcname} ... "
-    \ln -s -- "${srcname}" "${dstname}"
-    echo "[OK]"
-  done
+  if [[ -h "$dstname" ]]; then
+    echo -en "\tRemoving ... "
+    \rm -- "${dstname}" && echo "[OK] "
+  elif [[ -e "$dstname" ]]; then
+    echo -en "\tMoving to ${dstname}.backup.$(date -I) ... "
+    \mv -- "${dstname}" "${dstname}.backup.$(date -I)" && echo "[OK]"
+  fi
+  echo -en "\tSymlinking -> ${srcname} ... "
+  \ln -s -- "${srcname}" "${dstname}"
+  echo "[OK]"
+done
 
-  cd - 1>/dev/null
-}
+if [[ ! -f $HOME/.bash_profile ]]; then
+  echo "source .bashrc" >> $HOME/.bash_profile
+fi
 
-_sync_dotfiles
+cd - >/dev/null
+
