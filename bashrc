@@ -15,34 +15,11 @@ if [[ $SHELL == "/bin/bash" && -f /etc/bash_completion ]]; then
 fi
 
 # Try to set locale to en_US.UTF-8
-_check_locale()
-{
-  local re_utf8 re_us_utf8 test_lang
-  re_utf8="[Uu][Tt][Ff]-?8"
-  re_us_utf8="^en_US\.$re_utf8$"
-
-  # Try to set locale
-  if [[ ! $LANG =~ $re_us_utf8 ]]; then
-    if ! test_lang=$(locale -a | grep -E $re_us_utf8); then
-      echo -e "\033[1;33mLocale Warning\033[0m"
-      echo -e "Could not find UTF-8 among available locales. Now set to $LANG"
-    else
-      export LANG=$test_lang
-      if [[ ! $LC_CTYPE =~ $re_us_utf8 ]]; then
-        echo -e "\033[1;33mLocale Warning\033[0m"
-        echo "Had to force set LC_ALL, encoding might not work"
-        export LC_ALL=$test_lang
-      fi
-    fi
-  fi
-
-  # Check charmap
-  if [[ ! $(locale charmap) =~ $re_utf8 ]]; then
-    echo -e "\033[1;33mLocale Warning\033[0m"
-    echo -e "Charmap is $(locale charmap)"
-  fi
-}
-_check_locale
+if [[ ! $BASH_SCRIPTS_ARE_SOURCED ]]; then
+  export BASH_SCRIPTS_ARE_SOURCES=1
+  . $HOME/dotfiles/bash_scripts
+fi
+_set_locale
 
 # Variables
 set +o ignoreeof
@@ -52,6 +29,7 @@ HISTSIZE=10000
 VISUAL=vim
 EDITOR=vim
 PAGER=less
+GPGKEY=02FDDED4
 
 # This has worked on all systems so far
 stty sane

@@ -2,6 +2,8 @@
 umask 022
 
 # Start ssh-agent if supported and it's not started by this user
-. $HOME/dotfiles/scripts/set_ssh_agent
+export BASH_SCRIPTS_ARE_SOURCED=1
+. $HOME/dotfiles/bash_scripts
+_set_ssh_agent
 
 source .bashrc

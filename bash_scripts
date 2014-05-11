@@ -1,0 +1,41 @@
+_set_ssh_agent()
+{
+  SSHAGENT=$(command -v ssh-agent)
+  SSHAGENTARGS="-s"
+  if ! pgrep -xu $USER ssh-agent &>/dev/null; then
+    if [[ -z "$SSH_AUTH_SOCK" && -x "$SSHAGENT" ]]; then
+      eval "$($SSHAGENT $SSHAGENTARGS)"
+      trap "kill $SSH_AGENT_PID" 0
+      ssh-add
+    fi
+  fi
+}
+
+_set_locale()
+{
+  local re_utf8 re_us_utf8 test_lang
+  re_utf8="[Uu][Tt][Ff]-?8"
+  re_us_utf8="^en_US\.$re_utf8$"
+
+  # Try to set locale
+  if [[ ! $LANG =~ $re_us_utf8 ]]; then
+    if ! test_lang=$(locale -a | grep -E $re_us_utf8); then
+      echo -e "\033[1;33mLocale Warning\033[0m"
+      echo -e "Could not find UTF-8 among available locales. Now set to $LANG"
+    else
+      export LANG=$test_lang
+      if [[ ! $LC_CTYPE =~ $re_us_utf8 ]]; then
+        echo -e "\033[1;33mLocale Warning\033[0m"
+        echo "Had to force set LC_ALL, encoding might not work"
+        export LC_ALL=$test_lang
+      fi
+    fi
+  fi
+
+  # Check charmap
+  if [[ ! $(locale charmap) =~ $re_utf8 ]]; then
+    echo -e "\033[1;33mLocale Warning\033[0m"
+    echo -e "Charmap is $(locale charmap)"
+  fi
+}
+
