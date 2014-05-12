@@ -16,7 +16,7 @@ fi
 
 # Try to set locale to en_US.UTF-8
 if [[ ! $BASH_SCRIPTS_ARE_SOURCED ]]; then
-  export BASH_SCRIPTS_ARE_SOURCED=1
+  BASH_SCRIPTS_ARE_SOURCED=1
   . $HOME/dotfiles/bash_scripts
 fi
 _set_locale
