@@ -20,6 +20,7 @@ if [[ ! $BASH_SCRIPTS_ARE_SOURCED ]]; then
   . $HOME/dotfiles/bash_scripts
 fi
 _set_locale
+_set_ps1
 
 # Variables
 set +o ignoreeof
@@ -35,14 +36,6 @@ GPGKEY=02FDDED4
 stty sane
 stty stop undef
 stty start undef
-
-_set_ps1() {
-  local host
-  [[ -z $SSH_TTY ]] || host="\[\033[0;31m\]$HOSTNAME "
-  PS1="$host\[\033[0;34m\][\d \t] [j:\j|s:$?]
-\[\033[0;33m\]\u \w \$ \[\033[0m\]"
-}
-_set_ps1
 
 # Aliases
 alias ..='cd ..'
