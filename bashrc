@@ -16,7 +16,7 @@ fi
 
 # Try to set locale to en_US.UTF-8
 if [[ ! $BASH_SCRIPTS_ARE_SOURCED ]]; then
-  export BASH_SCRIPTS_ARE_SOURCES=1
+  export BASH_SCRIPTS_ARE_SOURCED=1
   . $HOME/dotfiles/bash_scripts
 fi
 _set_locale
@@ -58,7 +58,7 @@ alias l='ls -lh'
 alias ll='ls -alh'
 alias grep='grep --color=auto'
 
-case `uname` in
+case $(uname) in
   Linux)
     alias ls='ls --color=auto --group-directories-first'
     ;;
