@@ -4,31 +4,29 @@
 # Drop non-interactive shells
 [[ $- != *i* ]] && return
 
-# Prioritize / add home-bin
-export PATH=$HOME/bin:${PATH//:$HOME\/bin/}
-
-# Import bash-completion if they exist
-if [[ $SHELL == "/bin/bash" && -f /etc/bash_completion ]]; then
+# Look for bash_completion if shell is bash (I use this for zsh as well)
+if [[ $SHELL =~ bash && -f /etc/bash_completion ]]; then
   . /etc/bash_completion
 fi
 
-# Try to set locale to en_US.UTF-8
 if [[ ! $BASH_SCRIPTS_ARE_SOURCED ]]; then
   BASH_SCRIPTS_ARE_SOURCED=1
   . $HOME/dotfiles/bash_scripts
 fi
-_set_locale
-_set_ps1
+_set_locale # Try to set locale to en_US.UTF-8
+_set_ps1    # Try to set a nice PS1
 
 # Variables
 set +o ignoreeof
-unset LESS
-HISTFILE=~/.histfile
-HISTSIZE=10000
-VISUAL=vim
-EDITOR=vim
-PAGER=less
-GPGKEY=02FDDED4
+unset LESS        # I think this was a fix for some SunOS issue
+export PATH=$HOME/bin:${PATH//:$HOME\/bin/} # Prioritize / add home-bin
+export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:"
+export HISTFILE=~/.histfile
+export HISTSIZE=10000
+export VISUAL=vim
+export EDITOR=vim
+export PAGER=less
+export GPGKEY=02FDDED4
 
 # This has worked on all systems so far
 stty sane
@@ -66,7 +64,6 @@ esac
 # Minifuns
 function pushtmp() { cd $(mktemp -d); }
 function poptmp() { rmdir $PWD && cd ->/dev/null; }
-function youtube() { [[ -z $1 ]] || mplayer $(youtube-dl -g "$1") -vo null; }
 
 # Special application aliases
 alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
