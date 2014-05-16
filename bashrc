@@ -4,10 +4,8 @@
 # Drop non-interactive shells
 [[ $- != *i* ]] && return
 
-# Export home-bin if it doesn't exist
-if [[ ! $PATH =~ "$HOME/bin" ]]; then
-  export PATH=$HOME/bin:$PATH
-fi
+# Prioritize / add home-bin
+export PATH=$HOME/bin:${PATH//:$HOME\/bin/}
 
 # Import bash-completion if they exist
 if [[ $SHELL == "/bin/bash" && -f /etc/bash_completion ]]; then
