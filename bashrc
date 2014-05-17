@@ -63,7 +63,7 @@ esac
 
 # Minifuns
 function pushtmp() { cd $(mktemp -d); }
-function poptmp() { rmdir $PWD && cd ->/dev/null; }
+function poptmp() { rm -i ./* && rmdir $PWD && cd ->/dev/null; }
 
 # Special application aliases
 alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
