@@ -54,7 +54,12 @@ case $(uname) in
   SunOS)
     alias ls='ls --color=auto'
     alias emacs='emacs --color=always'
-    [[ $TERM == screen ]] && TERM=xterm
+
+    # SunOS treats screen as a stupid shell and removes features
+    [[ $TERM == screen ]] && export TERM=xterm
+
+    # SunOS doesn't recognize the last bit of colors
+    [[ -z $LS_COLORS ]] || export LS_COLORS=${LS_COLORS//:su*}
     ;;
   *BSD)
     alias ls='ls -G'
@@ -63,7 +68,7 @@ esac
 
 # Minifuns
 function pushtmp() { cd $(mktemp -d); }
-function poptmp() { rm -i ./* && rmdir $PWD && cd ->/dev/null; }
+function poptmp() { rm -vi ./* ; rmdir -v $PWD && cd - >/dev/null; }
 
 # Special application aliases
 alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
