@@ -66,16 +66,17 @@ case $(uname) in
     ;;
 esac
 
-# Minifuns
-function pushtmp() { cd $(mktemp -d); }
-function poptmp() { rm -vi ./* ; rmdir -v $PWD && cd - >/dev/null; }
-
-# Special application aliases
+# Aliases
 alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
 alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
 alias g++11='g++ -std=c++11'
 alias clang++11='clang++ -std=c++11'
 alias ghc='ghc --make -Wall'
+alias isempty='(shopt -s nullglob dotglob; f=(*); ((! ${#f[@]})))'
+
+# Functions
+pushtmp() { cd $(mktemp -d); }
+poptmp() { rm -rvi "$PWD" && cd -; }
 
 # Colored man-pages
 man() {
