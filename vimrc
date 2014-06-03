@@ -55,16 +55,6 @@ nnoremap <silent> <Space> :silent noh<Bar>echo<CR>
 " sudow does a sudo save
 command Sudow w !sudo tee % >/dev/null
 
-" To keep me out of INSERT-mode
-map <Left>  <NOP>
-map <Right> <NOP>
-map <Up>    <NOP>
-map <Down>  <NOP>
-imap <Left>  <NOP>
-imap <Right> <NOP>
-imap <Up>    <NOP>
-imap <Down>  <NOP>
-
 " Load pathogen if it exists
 if filereadable(glob("~/.vim/autoload/pathogen.vim"))
   execute pathogen#infect()
