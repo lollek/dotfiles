@@ -53,7 +53,6 @@ alias g++11='g++ -std=c++11'
 alias clang++11='clang++ -std=c++11'
 alias ghc='ghc --make -Wall'
 
-alias isempty='(shopt -s nullglob dotglob; f=(*); ((! ${#f[@]})))'
 alias pushtmp='cd $(mktemp -d)'
 alias poptmp='\rm -ri "$PWD" && cd -'
 
@@ -75,6 +74,9 @@ case $(uname) in
     alias ls='ls -G'
     ;;
 esac
+
+# Check if dir is empty
+isempty() { (shopt -s nullglob dotglob; f=($1/*); ((! ${#f[@]}))); }
 
 # Colored man-pages
 man() {
