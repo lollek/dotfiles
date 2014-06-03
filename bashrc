@@ -47,6 +47,16 @@ alias l='ls -lh'
 alias ll='ls -alh'
 alias grep='grep --color=auto'
 
+alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
+alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
+alias g++11='g++ -std=c++11'
+alias clang++11='clang++ -std=c++11'
+alias ghc='ghc --make -Wall'
+
+alias isempty='(shopt -s nullglob dotglob; f=(*); ((! ${#f[@]})))'
+alias pushtmp='cd $(mktemp -d)'
+alias poptmp='\rm -ri "$PWD" && cd -'
+
 case $(uname) in
   Linux)
     alias ls='ls --color=auto --group-directories-first'
@@ -65,18 +75,6 @@ case $(uname) in
     alias ls='ls -G'
     ;;
 esac
-
-# Aliases
-alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
-alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
-alias g++11='g++ -std=c++11'
-alias clang++11='clang++ -std=c++11'
-alias ghc='ghc --make -Wall'
-alias isempty='(shopt -s nullglob dotglob; f=(*); ((! ${#f[@]})))'
-
-# Functions
-pushtmp() { cd $(mktemp -d); }
-poptmp() { \rm -ri "$PWD" && cd -; }
 
 # Colored man-pages
 man() {
