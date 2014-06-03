@@ -1,6 +1,5 @@
-" Last Updated 29 Dec 2013
 " Olle K vimrc
-"
+
 """ General stuff
 set nocompatible                  " Remove vi backward compability
 set history=50                    " 50 lines of command line history
