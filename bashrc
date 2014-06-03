@@ -76,7 +76,7 @@ alias isempty='(shopt -s nullglob dotglob; f=(*); ((! ${#f[@]})))'
 
 # Functions
 pushtmp() { cd $(mktemp -d); }
-poptmp() { rm -rvi "$PWD" && cd -; }
+poptmp() { \rm -ri "$PWD" && cd -; }
 
 # Colored man-pages
 man() {
