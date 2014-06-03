@@ -44,9 +44,6 @@ set hlsearch                      " Highlighted search
 set nobackup                      " Remove backups when done
 set nowritebackup                 " Don't write backup
 set noswapfile                    " Remove swapfile when done
-set backupdir=~/.vim/backup       " Move backups here
-set backupcopy=yes                " Backups retain attributes
-set dir=~/.vim/backup             " Move .swaps here
 set viminfo=                      " Stop vim from saving crap settings
 
 """ Extra commands
