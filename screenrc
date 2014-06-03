@@ -29,11 +29,8 @@ defutf8 on             # Try to force utf-8
 escape ^}]
 
 ## Some startup windows:
-screen -t editor 0 $SHELL
-screen -t local 1 $SHELL
-screen -t remote 2 $SHELL
-
-#screen -t emacs 9 emacs -nw
-#screen -t irssi 9 irssi
+screen -t editor 0
+screen -t local 1
+screen -t remote 2
 
 
