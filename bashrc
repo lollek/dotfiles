@@ -35,13 +35,9 @@ stty start undef
 
 # Aliases
 alias ..='cd ..'
-alias chmod='chmod -v'
-alias chown='chown -v'
-alias chgrp='chgrp -v'
-alias cp='cp -v'
-alias ln='ln -v'
-alias mv='mv -v'
-alias rm='rm -v'
+alias chmod='chmod -c'
+alias chown='chown -c'
+alias chgrp='chgrp -c'
 alias la='ls -A'
 alias l='ls -lh'
 alias ll='ls -alh'
