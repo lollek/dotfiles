@@ -73,6 +73,7 @@ esac
 
 # Check if dir is empty
 isempty() { (shopt -s nullglob dotglob; f=($1/*); ((! ${#f[@]}))); }
+retry() { while ! $@; do sleep 1; done; }
 
 # Colored man-pages
 man() {
