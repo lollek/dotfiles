@@ -35,9 +35,6 @@ stty start undef
 
 # Aliases
 alias ..='cd ..'
-alias chmod='chmod -c'
-alias chown='chown -c'
-alias chgrp='chgrp -c'
 alias la='ls -A'
 alias l='ls -lh'
 alias ll='ls -alh'
@@ -55,6 +52,9 @@ alias poptmp='\rm -ri "$PWD" && cd -'
 case $(uname) in
   Linux)
     alias ls='ls --color=auto --group-directories-first'
+    alias chmod='chmod -c'
+    alias chown='chown -c'
+    alias chgrp='chgrp -c'
     ;;
   SunOS)
     alias ls='ls --color=auto'
