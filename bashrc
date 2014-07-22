@@ -15,6 +15,7 @@ if [[ ! $BASH_SCRIPTS_ARE_SOURCED ]]; then
 fi
 _set_locale # Try to set locale to en_US.UTF-8
 _set_ps1    # Try to set a nice PS1
+_set_editor # Set vim or vi to EDITOR
 
 # Variables
 set +o ignoreeof
@@ -23,8 +24,8 @@ export PATH=$HOME/bin:${PATH//:$HOME\/bin/} # Prioritize / add home-bin
 export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:"
 export HISTFILE=~/.histfile
 export HISTSIZE=10000
-export VISUAL=vim
-export EDITOR=vim
+#export EDITOR=vim -- this is set inside _set_editor() above
+export VISUAL=$EDITOR
 export PAGER=less
 export GPGKEY=02FDDED4
 
@@ -35,12 +36,17 @@ stty start undef
 
 # Aliases
 alias ..='cd ..'
+alias :e="$EDITOR"
+
 alias la='ls -A'
 alias l='ls -lh'
 alias ll='ls -alh'
 alias grep='grep --color=auto'
 
 alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
+alias gcc89='gcc -Wall -Wextra -Werror -pedantic -g -std=c89'
+alias gcc89='gcc -Wall -Wextra -Werror -pedantic -g -std=c99'
+alias gcc11='gcc -Wall -Wextra -Werror -pedantic -g -std=c11'
 alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
 alias g++11='g++ -std=c++11'
 alias clang++11='clang++ -std=c++11'
