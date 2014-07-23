@@ -9,10 +9,7 @@ if [[ $SHELL =~ bash && -f /etc/bash_completion ]]; then
   . /etc/bash_completion
 fi
 
-if [[ ! $BASH_SCRIPTS_ARE_SOURCED ]]; then
-  BASH_SCRIPTS_ARE_SOURCED=1
-  . $HOME/dotfiles/bash_scripts
-fi
+source $HOME/dotfiles/bash_scripts
 _set_locale # Try to set locale to en_US.UTF-8
 _set_ps1    # Try to set a nice PS1
 _set_editor # Set vim or vi to EDITOR
