@@ -1,9 +1,10 @@
 [user]
 	email = olle.kvarnstroem@gmail.com
 	name = Olle K
+	signingkey = 02FDDED4
 [push]
-        default = current
+	default = current
 [core]
-        editor = vim
+	editor = vim
 [color]
 	ui = true
