@@ -1,51 +1,76 @@
-## Last Updated 2013-03-04
-# Olle K bashrc
+## Olle K bashrc
+## Last Updated 2014-07-28
 
-# Drop non-interactive shells
+## Drop non-interactive shells
 [[ $- != *i* ]] && return
 
-# Look for bash_completion if shell is bash (I use this for zsh as well)
-if [[ $SHELL =~ bash && -f /etc/bash_completion ]]; then
-  . /etc/bash_completion
-fi
-
-source $HOME/dotfiles/bash_scripts
-_set_locale # Try to set locale to en_US.UTF-8
-_set_ps1    # Try to set a nice PS1
-_set_editor # Set vim or vi to EDITOR
-
-# Variables
-set +o ignoreeof
-unset LESS        # I think this was a fix for some SunOS issue
-export PATH=$HOME/bin:${PATH//:$HOME\/bin/} # Prioritize / add home-bin
+## ENVIRONMENT
+export EDITOR=$(type vim &>/dev/null && echo vim || echo vi)
+export VISUAL=$EDITOR
+export PAGER=less
+export PATH=$HOME/bin:${PATH//:$HOME\/bin/}
 export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:"
 export HISTFILE=~/.histfile
 export HISTSIZE=10000
-#export EDITOR=vim -- this is set inside _set_editor() above
-export VISUAL=$EDITOR
-export PAGER=less
 export GPGKEY=02FDDED4
 
-# This has worked on all systems so far
+## This has worked on all systems so far
 stty sane
 stty stop undef
 stty start undef
 
-# Aliases
+## BASH
+if [[ $SHELL == *bash ]]; then
+  set +o ignoreeof
+
+  # PS1
+  [[ -z $SSH_TTY ]] && host= || host="\[\033[0;31m\]$HOSTNAME "
+  PS1="$host\[\033[0;34m\][\d \t] [j:\j|s:\$?]
+\[\033[0;33m\]\u \w \$ \[\033[0m\]"
+  unset host
+
+  # Autocomplete
+  [[ -f /etc/bash_completion ]] && source /etc/bash_completion
+fi
+
+## LOCALE
+utf8="[Uu][Tt][Ff]-?8"
+us_utf8="^en_US\.$utf8$"
+warn() { echo -e "\033[1;33mWarning:\033[0m $0"; }
+
+if [[ ! $LANG =~ $us_utf8 ]]; then
+  wanted_locale=$(locale -a | awk "/$us_utf8/{print;exit}")
+  if [[ -z $wanted_locale ]]; then
+    warn "Could not find any en_US.UTF-8 locale. (Currently: $LANG)"
+  else
+    export LANG=$wanted_locale
+    if [[ ! $LC_CTYPE =~ $us_utf8 ]]; then
+      warn "Had to force set LC_ALL, encoding might not work"
+      export LC_ALL=$wanted_locale
+    fi
+  fi
+fi
+
+charmap=$(locale charmap)
+[[ $charmap =~ $utf8 ]] || warn "Charmap is $charmap"
+unset utf8 us_utf8 warn charmap
+
+## ALIASES
 alias ..='cd ..'
 alias :e="$EDITOR"
 
 alias la='ls -A'
-alias l='ls -lh'
-alias ll='ls -alh'
+alias ll='ls -lh'
 alias grep='grep --color=auto'
 
-alias gcc='gcc -Wall -Wextra -Werror -pedantic -g'
-alias gcc89='gcc -Wall -Wextra -Werror -pedantic -g -std=c89'
-alias gcc89='gcc -Wall -Wextra -Werror -pedantic -g -std=c99'
-alias gcc11='gcc -Wall -Wextra -Werror -pedantic -g -std=c11'
-alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++ -g'
+alias gcc='gcc -Wall -Wextra -Werror -pedantic'
+alias gcc89='gcc -std=c89'
+alias gcc99='gcc -std=c99'
+alias gcc11='gcc -std=c11'
+alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++'
 alias g++11='g++ -std=c++11'
+alias clang='clang -Weverything'
+alias clang++='clang++ -Weverything'
 alias clang++11='clang++ -std=c++11'
 alias ghc='ghc --make -Wall'
 
@@ -60,12 +85,11 @@ case $(uname) in
     alias chgrp='chgrp -c'
     ;;
   SunOS)
+    unset LESS
     alias ls='ls --color=auto'
     alias emacs='emacs --color=always'
-
     # SunOS treats screen as a stupid shell and removes features
     [[ $TERM == screen ]] && export TERM=xterm
-
     # SunOS doesn't recognize the last bit of colors
     [[ -z $LS_COLORS ]] || export LS_COLORS=${LS_COLORS//:su*}
     ;;
@@ -74,7 +98,7 @@ case $(uname) in
     ;;
 esac
 
-# Check if dir is empty
+## FUNCTIONS
 isempty() { (shopt -s nullglob dotglob; f=($1/*); ((! ${#f[@]}))); }
 retry() { while ! $@; do sleep 1; done; }
 
