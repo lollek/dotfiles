@@ -36,7 +36,7 @@ fi
 ## LOCALE
 utf8="[Uu][Tt][Ff]-?8"
 us_utf8="^en_US\.$utf8$"
-warn() { echo -e "\033[1;33mWarning:\033[0m $0"; }
+warn() { echo -e "\033[1;33mWarning:\033[0m $@"; }
 
 if [[ ! $LANG =~ $us_utf8 ]]; then
   wanted_locale=$(locale -a | awk "/$us_utf8/{print;exit}")
