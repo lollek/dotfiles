@@ -44,7 +44,7 @@ if [[ ! $LANG =~ $us_utf8 ]]; then
     warn "Could not find any en_US.UTF-8 locale. (Currently: $LANG)"
   else
     export LANG=$wanted_locale
-    if [[ ! $(locale C_TIME | tail -n 1)  == "UTF-8" ]]; then
+    if [[ ! $(locale LC_TIME | tail -n 1)  == "UTF-8" ]]; then
       warn "Had to force set LC_ALL, encoding might not work"
       export LC_ALL=$wanted_locale
     fi
