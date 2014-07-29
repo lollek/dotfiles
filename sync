@@ -4,7 +4,7 @@ set -e
 start_pwd="$PWD"
 \cd $(dirname $0)
 
-if type git &>/dev/null; then
+if [[ -f $HOME/.gitconfig ]] && type git &>/dev/null; then
   \git stash save -q
   \git pull -q
   \git stash pop -q 2>/dev/null
