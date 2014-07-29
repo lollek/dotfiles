@@ -44,7 +44,7 @@ if [[ ! $LANG =~ $us_utf8 ]]; then
     warn "Could not find any en_US.UTF-8 locale. (Currently: $LANG)"
   else
     export LANG=$wanted_locale
-    if [[ ! $LC_CTYPE =~ $us_utf8 ]]; then
+    if [[ ! $(locale C_TIME | tail -n 1)  == "UTF-8" ]]; then
       warn "Had to force set LC_ALL, encoding might not work"
       export LC_ALL=$wanted_locale
     fi
@@ -53,7 +53,7 @@ fi
 
 charmap=$(locale charmap)
 [[ $charmap =~ $utf8 ]] || warn "Charmap is $charmap"
-unset utf8 us_utf8 warn charmap
+unset utf8 us_utf8 warn wanted_charmap charmap
 
 ## ALIASES
 alias ..='cd ..'
