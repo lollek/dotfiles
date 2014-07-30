@@ -59,6 +59,7 @@ unset utf8 us_utf8 warn wanted_charmap charmap
 alias ..='cd ..'
 alias :e="$EDITOR"
 
+alias l='ls -lh'
 alias la='ls -A'
 alias ll='ls -lh'
 alias grep='grep --color=auto'
