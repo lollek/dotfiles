@@ -75,6 +75,11 @@ alias clang++='clang++ -Weverything -Werror'
 alias clang++11='clang++ -std=c++11'
 alias ghc='ghc --make -Wall'
 
+# Git
+if type git &> /dev/null; then
+  alias s='git status -bs'
+fi
+
 alias pushtmp='cd $(mktemp -d)'
 alias poptmp='\rm -ri "$PWD" && cd -'
 
