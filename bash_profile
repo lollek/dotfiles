@@ -12,13 +12,7 @@ if [[ -x "$ssh_agent" && -z "$SSH_AUTH_SOCK" ]] &&
 fi
 unset ssh_agent args
 
+export BAAM=1
+
 source .bashrc
-
-while true; do
-  read -p "Do you want to start screen? (Y/n) " yn
-  case $yn in
-    [Yy]*|"") screen; break;;
-    [Nn]*) break;;
-  esac
-done
-
+screen -dRR
