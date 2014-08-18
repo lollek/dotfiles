@@ -85,6 +85,7 @@ alias poptmp='\rm -ri "$PWD" && cd -'
 
 case $(uname) in
   Linux)
+    alias pacman='pacman --color=auto'
     alias ls='ls --color=auto --group-directories-first'
     alias chmod='chmod -c'
     alias chown='chown -c'
