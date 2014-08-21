@@ -8,3 +8,7 @@
 	editor = vim
 [color]
 	ui = true
+[pretty]
+	fixes = Fixes: %h (\"%s\")
+[alias]
+	ignore = "!gi() { curl http://www.gitignore.io/api/$@ ;}; gi"
