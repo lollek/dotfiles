@@ -114,7 +114,7 @@ esac
 
 ## FUNCTIONS
 isempty() { (shopt -s nullglob dotglob; f=($1/*); ((! ${#f[@]}))); }
-retry() { while ! $@; do sleep 1; done; }
+retry() { while ! "$@"; do sleep 1; done; }
 
 # Colored man-pages
 man() {
