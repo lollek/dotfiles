@@ -57,7 +57,7 @@ unset utf8 us_utf8 warn wanted_charmap charmap
 
 ## ALIASES
 alias ..='cd ..'
-alias :e="$EDITOR"
+alias :e='$EDITOR'
 
 alias l='ls -lh'
 alias la='ls -A'
