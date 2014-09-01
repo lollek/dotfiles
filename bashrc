@@ -24,7 +24,7 @@ if [[ $SHELL == *bash ]]; then
   set +o ignoreeof
 
   # PS1
-  [[ -z $SSH_TTY ]] && host= || host="\[\033[0;31m\]$HOSTNAME "
+  [[ -z $SSH_TTY ]] && host='' || host="\[\033[0;31m\]$HOSTNAME "
   PS1="$host\[\033[0;34m\][\d \t] [j:\j|s:\$?]
 \[\033[0;33m\]\u \w \$ \[\033[0m\]"
   unset host
