@@ -82,9 +82,10 @@ alias poptmp='\rm -ri "$PWD" && cd -'
 ## Set stty settings and make them persist on reset
 stty_settings="stty start undef; stty stop undef"
 if [[ ! -z $SSH_TTY ]]; then
-  stty_settings="$stty_settings; stty erase ^?"
+  alias reset="$(type -P reset) -e ^?; $stty_settings"
+else
+  alias reset="$(type -P reset); $stty_settings"
 fi
-alias reset="$(type -P reset); $stty_settings"
 eval $stty_settings
 
 case $(uname) in
