@@ -14,10 +14,6 @@ export HISTFILE=~/.histfile
 export HISTSIZE=10000
 export GPGKEY=02FDDED4
 
-## This has worked on all systems so far
-stty sane
-stty stop undef
-stty start undef
 
 ## BASH
 if [[ $SHELL == *bash ]]; then
@@ -82,6 +78,14 @@ fi
 
 alias pushtmp='cd $(mktemp -d)'
 alias poptmp='\rm -ri "$PWD" && cd -'
+
+## Set stty settings and make them persist on reset
+stty_settings="stty start undef; stty stop undef"
+if [[ ! -z $SSH_TTY ]]; then
+  stty_settings="$stty_settings; stty erase ^?"
+fi
+alias reset="$(type -P reset); $stty_settings"
+eval $stty_settings
 
 case $(uname) in
   Linux)
