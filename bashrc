@@ -83,13 +83,6 @@ fi
 alias pushtmp='cd $(mktemp -d)'
 alias poptmp='\rm -ri "$PWD" && cd -'
 
-if [[ ! -z $BAAM ]]; then
-  ssh()   { "ssh_wrapper" "ssh"   "$@"; }
-  mosh()  { "ssh_wrapper" "mosh"  "$@"; }
-  scp()   { "ssh_wrapper" "scp"   "$@"; }
-  rsync() { "ssh_wrapper" "rsync" "$@"; }
-fi
-
 case $(uname) in
   Linux)
     alias pacman='pacman --color=auto'
