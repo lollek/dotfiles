@@ -96,12 +96,12 @@ case $(uname) in
     alias chgrp='chgrp -c'
     ;;
   SunOS)
-    unset LESS
     alias ls='ls --color=auto'
     alias emacs='emacs --color=always'
-    # SunOS treats screen as a stupid shell and removes features
+
+    # SunOS quirks / bugs
+    unset LESS
     [[ $TERM == screen ]] && export TERM=xterm
-    # SunOS doesn't recognize the last bit of colors
     [[ -z $LS_COLORS ]] || export LS_COLORS=${LS_COLORS//:su*}
     ;;
   *BSD)
