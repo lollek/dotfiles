@@ -60,15 +60,28 @@ alias la='ls -A'
 alias ll='ls -lh'
 alias grep='grep --color=auto'
 
-alias gcc='gcc -Wall -Wextra -Werror -pedantic'
-alias gcc89='gcc -std=c89'
-alias gcc99='gcc -std=c99'
-alias gcc11='gcc -std=c11'
-alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++'
-alias g++11='g++ -std=c++11'
-alias clang='clang -Weverything -Werror'
-alias clang++='clang++ -Weverything -Werror'
-alias clang++11='clang++ -std=c++11'
+if type nasm &> /dev/null; then
+  asm32() { nasm -f elf32 $1 && ld -m elf_i386 -o ${1//.*} ${1//.*}.o; }
+fi
+
+if type gcc &> /dev/null; then
+  alias gcc='gcc -Wall -Wextra -Werror -pedantic'
+  alias gcc89='gcc -std=c89'
+  alias gcc99='gcc -std=c99'
+  alias gcc11='gcc -std=c11'
+fi
+
+if type g++ &> /dev/null; then
+  alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++'
+  alias g++99='g++ -std=c++99'
+  alias g++11='g++ -std=c++11'
+fi
+
+if type clang &> /dev/null; then
+  alias clang='clang -Weverything -Werror'
+  alias clang++='clang++ -Weverything -Werror'
+  alias clang++11='clang++ -std=c++11'
+fi
 alias ghc='ghc --make -Wall'
 
 # Git
