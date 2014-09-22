@@ -109,6 +109,9 @@ URxvt*boldFont:                         xft:DejaVu Sans Mono:bold:pixelsize=12:a
 ! URxvt*iso14755_52:                    boolean
 ! URxvt*xrm:                            string
 ! URxvt*keysym.sym:                     keysym
+URxvt.keysym.Shift-Control-V:           perl:clipboard:paste
+URxvt.iso14755:                         dalse
+URxvt.perl-ext-common:                  default,clipboard
 ! URxvt*background.border:              boolean
 ! URxvt*background.expr:                string
 ! URxvt*background.interval:            seconds
