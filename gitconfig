@@ -1,6 +1,6 @@
 [user]
 	email = olle+git@iix.se
-	name = Olle K
+	name = Olle Kvarnström
 	signingkey = 02FDDED4
 [push]
 	default = current
