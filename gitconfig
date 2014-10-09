@@ -11,4 +11,4 @@
 [pretty]
 	fixes = Fixes: %h (\"%s\")
 [alias]
-	ignore = "!gi() { curl http://www.gitignore.io/api/$@ ;}; gi"
+	ignore = "!gi() { curl -Ls https://www.gitignore.io/api/$@ ;}; gi"
