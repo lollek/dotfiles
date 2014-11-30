@@ -64,6 +64,10 @@ if type nasm &> /dev/null; then
   asm32() { nasm -f elf32 $1 && ld -m elf_i386 -o ${1%.*} ${1%.*}.o; }
 fi
 
+if type as &> /dev/null; then
+  asm() { as -o ${1%.*}.o $1 && ld -o ${1%.*} ${1%.*}.o; }
+fi
+
 if type gcc &> /dev/null; then
   alias gcc='gcc -Wall -Wextra -Werror -pedantic'
   alias gcc89='gcc -std=c89'
