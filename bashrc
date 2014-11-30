@@ -61,7 +61,7 @@ alias ll='ls -lh'
 alias grep='grep --color=auto'
 
 if type nasm &> /dev/null; then
-  asm32() { nasm -f elf32 $1 && ld -m elf_i386 -o ${1//.*} ${1//.*}.o; }
+  asm32() { nasm -f elf32 $1 && ld -m elf_i386 -o ${1%.*} ${1%.*}.o; }
 fi
 
 if type gcc &> /dev/null; then
