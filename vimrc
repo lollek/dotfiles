@@ -5,7 +5,6 @@ set encoding=utf-8                " Standard encoding
 set backspace=2                   " Set backspace=indent,eol,start
 
 """ Graphics
-set t_Co=256                      " 256 Colors
 set background=dark               " Dark background
 colorscheme delek                 " Colorscheme - peachpuff and delek are OK
 syntax on                         " Syntax highlighting
