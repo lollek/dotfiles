@@ -1,7 +1,7 @@
 " Olle K vimrc
 
 """ General stuff
-set enc=utf-8                     " Standard encoding
+set encoding=utf-8                " Standard encoding
 set backspace=indent,eol,start    " Decides which chars backspace can delete
 
 """ Graphics
