@@ -20,8 +20,8 @@ set showmatch                     " Show matching brackets.
 set lazyredraw                    " Make vim not flush screen during e.g. macros
 
 """ Formatting
-set autoindent                    " Automatic indent
-set smartindent                   " Do it well
+set autoindent                    " Copy indent from current line to new line
+" set smartindent                 " Add extra indent from time to time
 set softtabstop=2                 " 2 space indents
 set shiftwidth=2                  " 2 space indents
 set expandtab                     " Type spaces instead of tabs
