@@ -2,7 +2,6 @@
 
 """ General stuff
 set enc=utf-8                     " Standard encoding
-set modeline                      " Very handy, but sometimes a security issue
 " set suffixes=.bak,.swp,.o,      " Lower priority for some files at :e
 set backspace=indent,eol,start    " Decides which chars backspace can delete
 
