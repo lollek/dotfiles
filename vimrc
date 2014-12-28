@@ -2,7 +2,7 @@
 
 """ General stuff
 set encoding=utf-8                " Standard encoding
-set backspace=indent,eol,start    " Decides which chars backspace can delete
+set backspace=2                   " Set backspace=indent,eol,start
 
 """ Graphics
 set t_Co=256                      " 256 Colors
