@@ -6,7 +6,6 @@ set backspace=2                   " Set backspace=indent,eol,start
 
 """ Graphics
 colorscheme peachpuff             " Colorscheme - peachpuff and delek are OK
-set background=dark               " Night-friendly colours
 syntax on                         " Syntax highlighting
 set list listchars=trail:~,tab:>. " Show tabs/trailing whitespace
 set scrolloff=4                   " Tries to keep cursor a bit centered
