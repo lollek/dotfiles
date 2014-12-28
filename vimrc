@@ -25,7 +25,6 @@ set autoindent                    " Copy indent from current line to new line
 set softtabstop=2                 " 2 space indents
 set shiftwidth=2                  " 2 space indents
 set expandtab                     " Type spaces instead of tabs
-set nosmarttab                    " Don't remember this
 set textwidth=80                  " Wrap at 80 chars
 
 """ Searching
