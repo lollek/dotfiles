@@ -1,7 +1,6 @@
 " Olle K vimrc
 
 """ General stuff
-set history=50                    " 50 lines of command line history
 set enc=utf-8                     " Standard encoding
 set modeline                      " Very handy, but sometimes a security issue
 " set suffixes=.bak,.swp,.o,      " Lower priority for some files at :e
