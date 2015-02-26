@@ -20,10 +20,19 @@ if [[ $SHELL == *bash ]]; then
   set +o ignoreeof
 
   # PS1
-  [[ -z $SSH_TTY ]] && host='' || host="\[\033[0;31m\]$HOSTNAME "
-  PS1="$host\[\033[0;34m\][\d \t] [j:\j|s:\$?]
+  if [[ -n $SSH_TTY ]]; then
+    case "$(hostname -f)" in
+      "phii.iix.se")    host="phii.iix.se ";    headerclr="\[\033[0;35m\]" ;;
+      "pikachu.iix.se") host="pikachu.iix.se "; headerclr="\[\033[0;32m\]" ;;
+      *)                host="$HOSTNAME ";      headerclr="\[\033[0;37m\]" ;;
+    esac
+  else
+    headerclr="\[\033[0;34m\]"
+    host=""
+  fi
+  PS1="$headerclr$host[\d \t] [j:\j|s:\$?]
 \[\033[0;33m\]\u \w \$ \[\033[0m\]"
-  unset host
+  unset host headerclr
 
   # Autocomplete
   [[ -f /etc/bash_completion ]] && source /etc/bash_completion
