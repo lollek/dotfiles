@@ -12,4 +12,4 @@
 	fixes = Fixes: %h (\"%s\")
 [alias]
 	ignore = "!gi() { curl -Ls https://www.gitignore.io/api/$@ ;}; gi"
-	graph = "log --graph"
+	graph = "log --graph --decorate=full"
