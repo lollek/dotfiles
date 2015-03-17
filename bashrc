@@ -4,103 +4,100 @@
 ## Drop non-interactive shells
 [[ $- != *i* ]] && return
 
-## ENVIRONMENT
-[[ $PATH == *$HOME/bin* ]] || export PATH=$HOME/bin:$PATH
-export EDITOR=$(type vim &>/dev/null && echo vim || echo vi)
-export VISUAL=$EDITOR
-export PAGER=less
+set +o ignoreeof
+
+[[ $PATH == *$HOME/bin* ]] || export PATH="$HOME/bin:$PATH"
+export HISTFILE="~/.histfile"
+export HISTSIZE="10000"
+export GPGKEY="02FDDED4"
+export PAGER="less"
 export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:"
-export HISTFILE=~/.histfile
-export HISTSIZE=10000
-export GPGKEY=02FDDED4
 
-
-## BASH
-if [[ $SHELL == *bash ]]; then
-  set +o ignoreeof
-
-  # PS1
-  if [[ -n $SSH_TTY ]]; then
-    case "$(hostname -f)" in
-      "phii.iix.se")    host="phii.iix.se ";    headerclr="\[\033[0;35m\]" ;;
-      "pikachu.iix.se") host="pikachu.iix.se "; headerclr="\[\033[0;32m\]" ;;
-      *)                host="$HOSTNAME ";      headerclr="\[\033[0;37m\]" ;;
-    esac
-  else
-    headerclr="\[\033[0;34m\]"
-    host=""
-  fi
-  PS1="$headerclr$host[\d \t] [j:\j|s:\$?]
-\[\033[0;33m\]\u \w \$ \[\033[0m\]"
-  unset host headerclr
-
-  # Autocomplete
-  [[ -f /etc/bash_completion ]] && source /etc/bash_completion
-fi
-
-## LOCALE
-utf8="[Uu][Tt][Ff]-?8"
-us_utf8="^en_US\.$utf8$"
-warn() { echo -e "\033[1;33mWarning:\033[0m $1"; }
-
-if [[ ! $LANG =~ $us_utf8 ]]; then
-  wanted_locale=$(locale -a | awk "/$us_utf8/{print;exit}")
-  if [[ -z $wanted_locale ]]; then
-    warn "Could not find any en_US.UTF-8 locale. (Currently: $LANG)"
-  else
-    export LANG=$wanted_locale
-    if [[ ! $(locale LC_TIME | tail -n 1)  == "UTF-8" ]]; then
-      warn "Had to force set LC_ALL, encoding might not work"
-      export LC_ALL=$wanted_locale
-    fi
-  fi
-fi
-
-charmap=$(locale charmap)
-[[ $charmap =~ $utf8 ]] || warn "Charmap is $charmap"
-unset utf8 us_utf8 warn wanted_charmap charmap
-
-## ALIASES
-alias ..='cd ..'
+export EDITOR="$(type vim &>/dev/null && echo vim || echo vi)"
+export VISUAL="$EDITOR"
 alias :e='$EDITOR'
 
+case $(uname) in
+  Linux)
+    alias ls='ls --color=auto --group-directories-first'
+    alias chmod='chmod -c'
+    alias chown='chown -c'
+    alias chgrp='chgrp -c'
+    ;;
+
+  SunOS)
+    alias ls='ls --color=auto'
+    alias emacs='emacs --color=always'
+    unset LESS
+    export LS_COLORS="${LS_COLORS//:su*}"
+    [[ $TERM == screen ]] && export TERM=xterm
+    ;;
+
+  *BSD)
+    alias ls='ls -G'
+    ;;
+esac
+
+alias ..='cd ..'
 alias l='ls -lh'
 alias la='ls -A'
 alias ll='ls -lh'
 alias grep='grep --color=auto'
 
-if type nasm &> /dev/null; then
-  asm32() { nasm -f elf32 $1 && ld -m elf_i386 -o ${1%.*} ${1%.*}.o; }
-fi
+isempty() { (shopt -s nullglob dotglob; f=($1/*); ((! ${#f[@]}))); }
+retry() { while ! "$@"; do sleep 1; done; }
+man() {
+  env LESS_TERMCAP_mb=$'\E[01;31m' \
+  LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+  LESS_TERMCAP_me=$'\E[0m' \
+  LESS_TERMCAP_se=$'\E[0m' \
+  LESS_TERMCAP_ue=$'\E[0m' \
+  LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+  man "$@"
+}
 
-if type as &> /dev/null; then
-  asm() { as -o ${1%.*}.o $1 && ld -o ${1%.*} ${1%.*}.o; }
+# PS1
+if [[ -n $SSH_TTY ]]; then
+  case "$(hostname -f)" in
+    "phii.iix.se")    host="phii.iix.se ";    headerclr="\[\033[0;35m\]" ;;
+    "pikachu.iix.se") host="pikachu.iix.se "; headerclr="\[\033[0;32m\]" ;;
+    *)                host="$HOSTNAME ";      headerclr="\[\033[0;37m\]" ;;
+  esac
+else
+  headerclr="\[\033[0;34m\]"
+  host=""
 fi
+PS1="$headerclr$host[\d \t] [j:\j|s:\$?]\n\[\033[0;33m\]\u \w \$ \[\033[0m\]"
+unset host headerclr
 
-if type gcc &> /dev/null; then
-  alias gcc='gcc -Wall -Wextra -Werror -pedantic'
-  alias gcc89='gcc -std=c89'
-  alias gcc99='gcc -std=c99'
-  alias gcc11='gcc -std=c11'
-fi
 
-if type g++ &> /dev/null; then
-  alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++'
-  alias g++99='g++ -std=c++99'
-  alias g++11='g++ -std=c++11'
-fi
+## LOCALE
+tryfix_utf8() {
+  local utf8 us_utf8 wanted_charmap charmap
+  utf8="[Uu][Tt][Ff]-?8"
+  us_utf8="^en_US\.$utf8$"
+  warn() { echo -e "\033[1;33mWarning:\033[0m $1"; }
 
-if type clang &> /dev/null; then
-  alias clang='clang -Weverything -Werror'
-  alias clang++='clang++ -Weverything -Werror'
-  alias clang++11='clang++ -std=c++11'
-fi
-alias ghc='ghc --make -Wall'
 
-# Git
-if type git &> /dev/null; then
-  alias s='git status -bs'
-fi
+  if [[ ! $LANG =~ $us_utf8 ]]; then
+    wanted_locale=$(locale -a | awk "/$us_utf8/{print;exit}")
+    if [[ -z $wanted_locale ]]; then
+      warn "Could not find any en_US.UTF-8 locale. (Currently: $LANG)"
+    else
+      export LANG=$wanted_locale
+      if [[ ! $(locale LC_TIME | tail -n 1)  == "UTF-8" ]]; then
+        warn "Had to force set LC_ALL, encoding might not work"
+        export LC_ALL=$wanted_locale
+      fi
+    fi
+  fi
+
+  charmap=$(locale charmap)
+  [[ $charmap =~ $utf8 ]] || warn "Charmap is $charmap"
+
+  unset warn
+}
+tryfix_utf8
 
 ## Set stty settings and make them persist on reset
 stty_settings="stty start undef; stty stop undef"
@@ -111,39 +108,45 @@ else
 fi
 eval $stty_settings
 
-case $(uname) in
-  Linux)
-    alias pacman='pacman --color=auto'
-    alias ls='ls --color=auto --group-directories-first'
-    alias chmod='chmod -c'
-    alias chown='chown -c'
-    alias chgrp='chgrp -c'
-    ;;
-  SunOS)
-    alias ls='ls --color=auto'
-    alias emacs='emacs --color=always'
+## Special application settings
+if type as &> /dev/null; then
+  asm() { as -o ${1%.*}.o $1 && ld -o ${1%.*} ${1%.*}.o; }
+fi
 
-    # SunOS quirks / bugs
-    unset LESS
-    [[ $TERM == screen ]] && export TERM=xterm
-    [[ -z $LS_COLORS ]] || export LS_COLORS=${LS_COLORS//:su*}
-    ;;
-  *BSD)
-    alias ls='ls -G'
-    ;;
-esac
+if type clang &> /dev/null; then
+  alias clang='clang -Weverything -Werror'
+  alias clang++='clang++ -Weverything -Werror'
+  alias clang++11='clang++ -std=c++11'
+fi
 
-## FUNCTIONS
-isempty() { (shopt -s nullglob dotglob; f=($1/*); ((! ${#f[@]}))); }
-retry() { while ! "$@"; do sleep 1; done; }
+if type g++ &> /dev/null; then
+  alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++'
+  alias g++99='g++ -std=c++99'
+  alias g++11='g++ -std=c++11'
+fi
 
-# Colored man-pages
-man() {
-  env LESS_TERMCAP_mb=$'\E[01;31m' \
-  LESS_TERMCAP_md=$'\E[01;38;5;74m' \
-  LESS_TERMCAP_me=$'\E[0m' \
-  LESS_TERMCAP_se=$'\E[0m' \
-  LESS_TERMCAP_ue=$'\E[0m' \
-  LESS_TERMCAP_us=$'\E[04;38;5;146m' \
-  man "$@"
-}
+if type gcc &> /dev/null; then
+  alias gcc='gcc -Wall -Wextra -Werror -pedantic'
+  alias gcc89='gcc -std=c89'
+  alias gcc99='gcc -std=c99'
+  alias gcc11='gcc -std=c11'
+fi
+
+if type ghc &> /dev/null; then
+  alias ghc='ghc --make -Wall'
+fi
+
+if type git &> /dev/null; then
+  alias s='git status -bs'
+fi
+
+if type nasm &> /dev/null; then
+  asm32() { nasm -f elf32 $1 && ld -m elf_i386 -o ${1%.*} ${1%.*}.o; }
+fi
+
+if type pacman &> /dev/null; then
+  alias pacman='pacman --color=auto'
+fi
+
+## Extra files to exec
+[[ -f /etc/bash_completion ]] && source /etc/bash_completion
