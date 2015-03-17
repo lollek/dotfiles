@@ -136,15 +136,6 @@ esac
 ## FUNCTIONS
 isempty() { (shopt -s nullglob dotglob; f=($1/*); ((! ${#f[@]}))); }
 retry() { while ! "$@"; do sleep 1; done; }
-mvsha() {
-  if [[ -z $1 ]] ; then
-    echo -e "Usage: $0 FILE" >&2
-  else
-    local ext="${1#*.}"
-    local sha="$(shasum "$1" | cut -d' ' -f1)"
-    mv -vi "$1" "${sha}.${ext}"
-  fi
-}
 
 # Colored man-pages
 man() {
