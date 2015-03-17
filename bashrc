@@ -7,7 +7,7 @@
 set +o ignoreeof
 
 [[ $PATH == *$HOME/bin* ]] || export PATH="$HOME/bin:$PATH"
-export HISTFILE="~/.histfile"
+export HISTFILE="$HOME/.histfile"
 export HISTSIZE="10000"
 export GPGKEY="02FDDED4"
 export PAGER="less"
@@ -73,7 +73,7 @@ unset host headerclr
 
 ## LOCALE
 tryfix_utf8() {
-  local utf8 us_utf8 wanted_charmap charmap
+  local utf8 us_utf8 wanted_locale charmap
   utf8="[Uu][Tt][Ff]-?8"
   us_utf8="^en_US\.$utf8$"
   warn() { echo -e "\033[1;33mWarning:\033[0m $1"; }
@@ -106,11 +106,11 @@ if [[ ! -z $SSH_TTY ]]; then
 else
   alias reset="$(type -P reset); $stty_settings"
 fi
-eval $stty_settings
+eval "$stty_settings"
 
 ## Special application settings
 if type as &> /dev/null; then
-  asm() { as -o ${1%.*}.o $1 && ld -o ${1%.*} ${1%.*}.o; }
+  asm() { as -o "${1%.*}.o" "$1" && ld -o "${1%.*}" "${1%.*}.o"; }
 fi
 
 if type clang &> /dev/null; then
@@ -141,7 +141,7 @@ if type git &> /dev/null; then
 fi
 
 if type nasm &> /dev/null; then
-  asm32() { nasm -f elf32 $1 && ld -m elf_i386 -o ${1%.*} ${1%.*}.o; }
+  asm32() { nasm -f elf32 "$1" && ld -m elf_i386 -o "${1%.*}" "${1%.*}.o"; }
 fi
 
 if type pacman &> /dev/null; then
