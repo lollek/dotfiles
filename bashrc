@@ -102,9 +102,6 @@ if type git &> /dev/null; then
   alias s='git status -bs'
 fi
 
-alias pushtmp='cd $(mktemp -d)'
-alias poptmp='\rm -ri "$PWD" && cd -'
-
 ## Set stty settings and make them persist on reset
 stty_settings="stty start undef; stty stop undef"
 if [[ ! -z $SSH_TTY ]]; then
