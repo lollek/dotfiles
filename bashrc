@@ -109,6 +109,16 @@ fi
 eval "$stty_settings"
 
 ## Special application settings
+
+if type apt-get &> /dev/null; then
+  apt-sync() {
+    sudo apt-get update &&
+    sudo apt-get upgrade &&
+    sudo apt-get autoremove &&
+    sudo apt-get autoclean
+  }
+fi
+
 if type as &> /dev/null; then
   asm() { as -o "${1%.*}.o" "$1" && ld -o "${1%.*}" "${1%.*}.o"; }
 fi
