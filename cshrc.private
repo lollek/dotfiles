@@ -2,8 +2,8 @@
 # Created 26 August 2013
 # Last updated 8 Dec 2013
 
-# Set PS1
 set prompt = "%{\e[37;42;1m%}%n@%m%{\e[0m%} %{\e[34;1m%}%~%{\e[0m%} %# "
+setenv TERM xterm
 
 # Reverse history searching is GOLD
 bindkey "^R" i-search-back
@@ -12,19 +12,7 @@ bindkey "^R" i-search-back
 set autolist
 
 alias .. 'cd ..'
-alias chmod 'chmod -v'
-alias chown 'chown -v'
-alias chgrp 'chgrp -v'
-alias cp 'cp -v'
-alias ln 'ln -v'
-alias mv 'mv -v'
-alias rm 'rm -v'
-alias ls 'ls --color=auto --group-directories-first'
 alias la 'ls -A'
 alias l 'ls -lh'
 alias ll 'ls -alh'
-
-if ( `uname` == SunOS ) then
-  alias ls 'ls --color=auto'
-  alias emacs 'emacs --color=always'
-endif
+alias emacs 'emacs --color=always'
