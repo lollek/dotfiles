@@ -105,8 +105,6 @@ alias reset="$(type -P reset); $stty_settings"
 alias reset1="$(type -P reset) -e ^?; $stty_settings"
 alias reset2="$(type -P reset) -e ^h; $stty_settings"
 
-  
-fi
 eval "$stty_settings"
 
 ## Special application settings
