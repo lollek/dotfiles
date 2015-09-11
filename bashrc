@@ -101,11 +101,10 @@ tryfix_utf8
 
 ## Set stty settings and make them persist on reset
 stty_settings="stty start undef; stty stop undef"
-if [[ ! -z $SSH_TTY ]]; then
-  alias reset="$(type -P reset) -e ^?; $stty_settings"
-else
-  alias reset="$(type -P reset); $stty_settings"
-fi
+alias reset="$(type -P reset); $stty_settings"
+alias reset1="$(type -P reset) -e ^?; $stty_settings"
+alias reset2="$(type -P reset) -e ^h; $stty_settings"
+
 eval "$stty_settings"
 
 ## Special application settings

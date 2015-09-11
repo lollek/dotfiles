@@ -31,4 +31,5 @@ escape ^|\
 ## Some startup windows:
 screen -t base 0
 
-
+## Fix mouse wheel
+termcapinfo xterm* ti@:te@
