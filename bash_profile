@@ -23,7 +23,7 @@ read -p "What do you want to do? (S/x/n) " yn
 while true; do
   case $yn in
     ""|"S"|"s") screen -URD; break;;
-    "X"|"x")    startx; break;;
+    "X"|"x")    xinit; break;;
     "N"|"n")    break;;
     *)          read -p "Please answer s, x or n: " yn
   esac
