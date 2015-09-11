@@ -33,7 +33,7 @@ case $(uname) in
     [[ $TERM == screen ]] && export TERM=xterm
     ;;
 
-  *BSD)
+  *BSD|Darwin)
     alias ls='ls -G'
     ;;
 esac
