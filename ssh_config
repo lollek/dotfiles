@@ -1,0 +1,42 @@
+Host *
+  SendEnv LANG LC_*
+  HashKnownHosts yes
+  GSSAPIAuthentication yes
+  PreferredAuthentications publickey,password
+  IdentityFile ~/.ssh/id_rsa
+  ServerAliveInterval 60
+  Compression      yes
+  CompressionLevel 4
+Host github
+  Hostname github.com
+  User git
+Host ida
+  Hostname remote-und.ida.liu.se
+  User ollkv086
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+Host marsix
+  Hostname marsix.ida.liu.se
+  User ollkv086
+Host ixtab
+  Hostname ixtab.edu.isy.liu.se
+  User ollkv086
+Host iix.se
+  Hostname iix.se
+  User iix
+Host iix.se-phii
+  Hostname iix.se
+  User iix
+  Port 50022
+Host raspbmc
+  Hostname raspbmc
+  User pi
+Host pikachu
+  Hostname pikachu
+  User iix
+Host phii
+  Hostname phii
+  User iix
+Host hashbang
+  Hostname hashbang.sh
+  User lollek
