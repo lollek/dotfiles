@@ -13,11 +13,13 @@ Host github
 Host ida
   Hostname remote-und.ida.liu.se
   User ollkv086
+  ForwardX11 yes
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
 Host marsix
   Hostname marsix.ida.liu.se
   User ollkv086
+  ForwardX11 yes
 Host ixtab
   Hostname ixtab.edu.isy.liu.se
   User ollkv086
