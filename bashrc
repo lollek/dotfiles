@@ -1,5 +1,5 @@
-## Olle K bashrc
-## Last Updated 2014-07-28
+## Olle K bashrc. Needs to work with zsh as well
+## Last Updated 2015-09-13
 
 ## Drop non-interactive shells
 [[ $- != *i* ]] && return
@@ -56,19 +56,20 @@ man() {
   man "$@"
 }
 
-# PS1
-if [[ -n $SSH_TTY ]]; then
-  case "$(hostname -f)" in
-    "phii.iix.se")    host="phii.iix.se ";    headerclr="\[\033[0;35m\]" ;;
-    "pikachu.iix.se") host="pikachu.iix.se "; headerclr="\[\033[0;32m\]" ;;
-    *)                host="$HOSTNAME ";      headerclr="\[\033[0;37m\]" ;;
-  esac
-else
-  headerclr="\[\033[0;34m\]"
-  host=""
-fi
-PS1="$headerclr$host[\d \t] [j:\j|s:\$?]\n\[\033[0;33m\]\u \w \$ \[\033[0m\]"
-unset host headerclr
+reset_bash_ps1() {
+  local host=""
+  local color="\[\033[0;34m\]"
+
+  if [[ -n $SSH_TTY ]]; then
+    case "$(hostname -f)" in
+      "phii.iix.se")    host="phii.iix.se ";    color="\[\033[0;35m\]" ;;
+      "pikachu.iix.se") host="pikachu.iix.se "; color="\[\033[0;32m\]" ;;
+      *)                host="$HOSTNAME ";      color="\[\033[0;37m\]" ;;
+    esac
+  fi
+  PS1="${headerclr}${host}[\\d \\t] [j:\\j|s:\$?]\n\[\033[0;33m\]\\u \\w \\$ \[\033[0m\]"
+}
+[[ -n $BASH_VERSION  ]] && reset_bash_ps1
 
 
 ## LOCALE
@@ -99,13 +100,14 @@ tryfix_utf8() {
 }
 tryfix_utf8
 
-## Set stty settings and make them persist on reset
-stty_settings="stty start undef; stty stop undef"
-alias reset="$(type -P reset); $stty_settings"
-alias reset1="$(type -P reset) -e ^?; $stty_settings"
-alias reset2="$(type -P reset) -e ^h; $stty_settings"
-
-eval "$stty_settings"
+init_stty_settings() {
+  local stty_settings="stty start undef; stty stop undef"
+  alias reset="/usr/bin/reset; $stty_settings"
+  alias reset1="/usr/bin/reset -e ^?; $stty_settings"
+  alias reset2="/usr/bin/reset -e ^h; $stty_settings"
+  eval "$stty_settings"
+}
+init_stty_settings
 
 ## Special application settings
 
