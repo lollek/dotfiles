@@ -28,8 +28,5 @@ defutf8 on             # Try to force utf-8
 escape ^|\
 #escape ^}]
 
-## Some startup windows:
-screen -t base 0
-
 ## Fix mouse wheel
 termcapinfo xterm* ti@:te@
