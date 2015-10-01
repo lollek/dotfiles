@@ -67,7 +67,7 @@ reset_bash_ps1() {
       *)                host="$HOSTNAME ";      color="\[\033[0;37m\]" ;;
     esac
   fi
-  PS1="${headerclr}${host}[\\d \\t] [j:\\j|s:\$?]\n\[\033[0;33m\]\\u \\w \\$ \[\033[0m\]"
+  PS1="${color}${host}[\\d \\t] [j:\\j|s:\$?]\n\[\033[0;33m\]\\u \\w \\$ \[\033[0m\]"
 }
 [[ -n $BASH_VERSION  ]] && reset_bash_ps1
 
