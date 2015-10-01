@@ -63,7 +63,7 @@ reset_bash_ps1() {
   if [[ -n $SSH_TTY ]]; then
     case "$(hostname -f)" in
       "phii.iix.se")    host="phii.iix.se ";    color="\[\033[0;35m\]" ;;
-      "pikachu.iix.se") host="pikachu.iix.se "; color="\[\033[0;32m\]" ;;
+      "phoenix.iix.se") host="phoenix.iix.se "; color="\[\033[0;31m\]" ;;
       *)                host="$HOSTNAME ";      color="\[\033[0;37m\]" ;;
     esac
   fi
