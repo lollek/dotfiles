@@ -19,7 +19,6 @@ Host ida
 Host marsix
   Hostname marsix.ida.liu.se
   User ollkv086
-  ForwardX11 yes
 Host ixtab
   Hostname ixtab.edu.isy.liu.se
   User ollkv086
@@ -32,23 +31,15 @@ Host openelec
 Host hashbang.sh
   Hostname hashbang.sh
   User lollek
-Host gw.d4
-  #Hostname gw.d4.sysinst.ida.liu.se
-  Hostname 130.236.179.89
+Host gw.d4.sysinst.ida.liu.se
   IdentityFile ~/.ssh/id_rsa_d4
   User root
-Host server.d4
-  #Hostname server.d4.sysinst.ida.liu.se
-  Hostname 130.236.179.90
+Host server.d4.sysinst.ida.liu.se
   IdentityFile ~/.ssh/id_rsa_d4
   User root
-Host client-1.d4
-  #Hostname client-1.d4.sysinst.ida.liu.se
-  Hostname 130.236.179.91
+Host client-1.d4.sysinst.ida.liu.se
   IdentityFile ~/.ssh/id_rsa_d4
   User root
-Host client-2.d4
-  #Hostname client-2.d4.sysinst.ida.liu.se
-  Hostname 130.236.179.92
+Host client-2.d4.sysinst.ida.liu.se
   IdentityFile ~/.ssh/id_rsa_d4
   User root
