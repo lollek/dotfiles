@@ -41,6 +41,9 @@ set viminfo=                      " Stop vim from saving crap settings
 """ Extra commands
 " Press space to quit search:
 nnoremap <silent> <Space> :silent noh<Bar>echo<CR>
+nnoremap W :w<CR>
+nnoremap E :make<CR>
+
 " sudow does a sudo save
 command Sudow w !sudo tee % >/dev/null
 
