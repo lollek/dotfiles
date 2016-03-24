@@ -13,7 +13,6 @@ Host github
 Host ida
   Hostname remote-und.ida.liu.se
   User ollkv086
-  ForwardX11 yes
   StrictHostKeyChecking no
   UserKnownHostsFile /dev/null
 Host marsix
