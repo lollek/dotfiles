@@ -52,6 +52,19 @@ if filereadable(glob("~/.vim/autoload/pathogen.vim"))
   execute pathogen#infect()
 endif
 
+" Load vundle if it exists
+if filereadable(glob("~/.vim/bundle/Vundle.vim/README.md"))
+  set rtp+=~/.vim/bundle/Vundle.vim
+  filetype off
+  call vundle#begin()
+
+  Plugin 'VundleVim/Vundle.vim'
+  Plugin 'Valloric/YouCompleteMe'
+
+  call vundle#end()            " required
+  filetype plugin indent on    " required
+endif
+
 """ Indenting and Filetypes:
 " let g:is_bash=1 " Shell usually means bash
 filetype plugin indent on
