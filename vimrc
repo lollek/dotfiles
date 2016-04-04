@@ -25,6 +25,7 @@ set softtabstop=2                 " 2 space indents
 set shiftwidth=2                  " 2 space indents
 set expandtab                     " Type spaces instead of tabs
 set textwidth=80                  " Wrap at 80 chars
+set foldmethod=syntax             " Try to fold (=hide) information
 
 """ Searching
 set incsearch                     " Incremental
