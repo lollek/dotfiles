@@ -13,3 +13,4 @@
 [alias]
 	ignore = "!gi() { curl -Ls https://www.gitignore.io/api/$@ ;}; gi"
 	graph = "log --graph --decorate=full"
+	ff = "pull --ff-only"
