@@ -56,8 +56,12 @@ nnoremap E :make<CR>
 " sudo save with Sudow
 command Sudow w !sudo tee % >/dev/null
 
-" Prio 1: Try Vundle if it exists
-if isdirectory(glob("~/.vim/bundle"))
+" Prio 1: Try Pathogen if it exists
+if filereadable(glob("~/.vim/autoload/pathogen.vim"))
+  execute pathogen#infect()
+
+" Prio 2: Try Vundle if it exists
+elseif isdirectory(glob("~/.vim/bundle"))
   set rtp+=~/.vim/bundle/Vundle.vim
   filetype off
   call vundle#begin()
@@ -69,10 +73,6 @@ if isdirectory(glob("~/.vim/bundle"))
 
   call vundle#end()
   filetype plugin indent on
-
-" Prio 2: Try Pathogen if it exists
-elseif filereadable(glob("~/.vim/autoload/pathogen.vim"))
-  execute pathogen#infect()
 endif
 
 """ Indenting and Filetypes:
