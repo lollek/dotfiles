@@ -21,9 +21,6 @@ Host marsix
 Host ixtab
   Hostname ixtab.edu.isy.liu.se
   User ollkv086
-Host david.iix.se
-  Hostname iix.se
-  Port 50022
 Host openelec
   Hostname openelec
   User root
@@ -33,3 +30,9 @@ Host hashbang.sh
 Host leim
   Hostname localhost
   Port 50022
+Host dom0
+  Hostname 10.0.0.8
+Host david2
+  Hostname 10.0.0.9
+Host tuvstarr
+  Hostname 10.0.0.4

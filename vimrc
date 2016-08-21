@@ -58,7 +58,7 @@ command Sudow w !sudo tee % >/dev/null
 
 " Prio 1: Try Pathogen if it exists
 if filereadable(glob("~/.vim/autoload/pathogen.vim"))
-  execute pathogen#infect()
+  execute pathogen#infect('pathogen-bundle/{}')
 
 " Prio 2: Try Vundle if it exists
 elseif isdirectory(glob("~/.vim/bundle"))
