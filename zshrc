@@ -35,6 +35,15 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-extra
   if  [[ $(git ls-files --other --no-empty-directory --exclude-standard) != '' ]]; then
     hook_com[unstaged]+='%F{red}??%f'
   fi
+
+  if [[ $(git status -b --porcelain) =~ '\[(ahead [0-9]+)(, )?(behind [0-9]+)?\]' ]]; then
+    if [[ $match[1] != '' ]]; then
+      hook_com[branch]+=" %F{green}+${match[1]/ahead /}%f"
+    fi
+    if [[ $match[3] != '' ]]; then
+      hook_com[branch]+=" %F{red}-${match[3]/behind /}%f"
+    fi
+  fi
 }
 zstyle ':vcs_info:*' enable git
 precmd () { vcs_info; }
