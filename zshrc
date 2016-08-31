@@ -6,6 +6,7 @@
 # Load stuff
 zstyle :compinstall filename '~/.zshrc'
 zmodload zsh/complist
+autoload -Uz colors && colors
 autoload -Uz compinit && compinit
 autoload -Uz promptinit && promptinit
 autoload -Uz bashcompinit && bashcompinit             # Handle bash completions
@@ -13,9 +14,14 @@ autoload -Uz bashcompinit && bashcompinit             # Handle bash completions
 # Basic settings
 source ~/.bashrc                                      # Import from bash
 export SAVEHIST=10000
-export PS1="%n%# "
-prompt bart
 bindkey -e                                            # Emacs-mode
+calculate_prompt() {
+  local prompt_left1="%M %F{blue}[%~]%f ${vcs_info_msg_0_}"
+  local prompt_left2='%# '
+  local prompt_right1='%D{%a %b %d %R W%V}'
+  PROMPT="$prompt_left1"$'\n'"$prompt_left2"
+  RPROMPT="$prompt_right1"
+}
 
 # Autocomplete
 zstyle ':completion:*' menu select                    # Menu-like autocomplete
@@ -28,8 +34,8 @@ autoload -Uz vcs_info
 zstyle ':vcs_info:*' stagedstr 'M'
 zstyle ':vcs_info:*' unstagedstr 'M'
 zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*' actionformats '%F{green}%b%f|%F{yellow}%c%F{red}%u (%a)%f '
-zstyle ':vcs_info:*' formats '%F{green}%b%f|%F{green}%c%F{red}%u%f '
+zstyle ':vcs_info:*' actionformats '%F{green}%b%f %F{yellow}%c%F{red}%u (%a)%f '
+zstyle ':vcs_info:*' formats '%F{green}%b%f %F{green}%c%F{red}%u%f '
 zstyle ':vcs_info:git*+set-message:*' hooks git-extra
 +vi-git-extra() {
   if  [[ $(git ls-files --other --no-empty-directory --exclude-standard) != '' ]]; then
@@ -46,8 +52,10 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-extra
   fi
 }
 zstyle ':vcs_info:*' enable git
-precmd () { vcs_info; }
-PROMPT='${vcs_info_msg_0_}%# '
+precmd () {
+  vcs_info
+  calculate_prompt
+}
 
 
 ## See man zshoptions
