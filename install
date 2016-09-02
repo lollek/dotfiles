@@ -1,0 +1,53 @@
+#! /usr/bin/env bash
+set -euo pipefail
+
+bad_usage() {
+  echo "USAGE: ${0} COMMAND" >&2
+  echo 'Available commands:' >&2
+  echo '  pathogen dotfiles' >&2
+  exit 1
+}
+
+if [[ ${#@} -eq 0 ]]; then
+  bad_usage
+fi
+
+for arg in ${@}; do
+  case ${1} in
+    'pathogen')
+      mkdir -p ${HOME}/.vim/{autoload,pathogen-bundle}
+      curl -LSso ${HOME}/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+      ;;
+
+    'dotfiles')
+      start_pwd="$PWD"
+      \cd "$(dirname $0)"
+      for dotfilename in bashrc emacs gitconfig screenrc vimrc zshrc; do
+        srcname="$PWD/$dotfilename"
+        dstname="$HOME/.$dotfilename"
+
+        if [[ -h "$dstname" ]]; then
+          if [[ $(readlink $dstname) != $srcname ]]; then
+            \ln -sfv -- "$srcname" "$dstname"
+          fi
+
+        elif [[ -e "$dstname" ]]; then
+          \mv -v -- "$dstname" "$dstname.backup.$(date -I)"
+          \ln -sv -- "$srcname" "$dstname"
+
+        else
+          \ln -sv -- "$srcname" "$dstname"
+        fi
+      done
+
+      if [[ ! -e $HOME/.bash_profile ]]; then
+        echo "source .bashrc" > "$HOME/.bash_profile"
+      fi
+
+      \cd "$start_pwd"
+      ;;
+
+    '-h'|'-help'|'--help') bad_usage ;;
+    *) echo "Unknown command: ${arg}" >&2 exit 1
+  esac
+done
