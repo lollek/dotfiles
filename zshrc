@@ -8,7 +8,6 @@ zstyle :compinstall filename '~/.zshrc'
 zmodload zsh/complist
 autoload -Uz colors && colors
 autoload -Uz compinit && compinit
-autoload -Uz promptinit && promptinit
 autoload -Uz bashcompinit && bashcompinit             # Handle bash completions
 
 # Basic settings
