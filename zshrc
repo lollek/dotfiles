@@ -15,13 +15,9 @@ autoload -Uz bashcompinit && bashcompinit             # Handle bash completions
 source ~/.bashrc                                      # Import from bash
 export SAVEHIST=10000
 bindkey -e                                            # Emacs-mode
-calculate_prompt() {
-  local prompt_left1="%M %F{blue}[%~]%f ${vcs_info_msg_0_}"
-  local prompt_left2='%# '
-  local prompt_right1='%D{%a %b %d %R W%V}'
-  PROMPT="$prompt_left1"$'\n'"$prompt_left2"
-  RPROMPT="$prompt_right1"
-}
+PROMPT='%F{red}%M %F{blue}[%~]%f ${vcs_info_msg_0_}
+%# '
+RPROMPT='%D{%a %b %d %R W%V}'
 
 # Autocomplete
 zstyle ':completion:*' menu select                    # Menu-like autocomplete
@@ -54,7 +50,6 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-extra
 zstyle ':vcs_info:*' enable git
 precmd () {
   vcs_info
-  calculate_prompt
 }
 
 
