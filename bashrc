@@ -21,11 +21,13 @@ case $(uname) in
     alias chmod='chmod -c'
     alias chown='chown -c'
     alias chgrp='chgrp -c'
+    alias grep='grep --color=auto'
     ;;
 
   SunOS)
     alias ls='ls --color=auto'
     alias emacs='emacs --color=always'
+    alias grep='grep --color=auto'
     unset LESS
     export LS_COLORS="${LS_COLORS//:su*}"
     if [[ ${TERM} == screen ]]; then
@@ -35,6 +37,7 @@ case $(uname) in
 
   FreeBSD|Darwin)
     alias ls='ls -G'
+    alias grep='grep --color=auto'
     ;;
 esac
 
@@ -42,7 +45,6 @@ alias ..='cd ..'
 alias l='ls -lh'
 alias la='ls -A'
 alias ll='ls -lh'
-alias grep='grep --color=auto'
 
 isempty() { (shopt -s nullglob dotglob; f=(${1}/*); ((! ${#f[@]}))); }
 retry() { while ! "${@}"; do sleep 1; done; }
