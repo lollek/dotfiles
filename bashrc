@@ -1,21 +1,19 @@
 ## Olle K bashrc. Needs to work with zsh as well
-## Last Updated 2015-09-13
 
 ## Drop non-interactive shells
-[[ $- != *i* ]] && return
+[[ ${-} != *i* ]] && return
 
 set +o ignoreeof
 
-[[ $PATH == *$HOME/bin* ]] || export PATH="$HOME/bin:$PATH"
-export HISTFILE="$HOME/.histfile"
-export HISTSIZE="10000"
-export GPGKEY="02FDDED4"
-export PAGER="less"
-export LS_COLORS="di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:"
+[[ $PATH == *$HOME/bin* ]] || export PATH="${HOME}/bin:${PATH}"
+export HISTFILE="${HOME}/.histfile"
+export HISTSIZE='10000'
+export PAGER='less'
+export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
 
-export EDITOR="$(type vim &>/dev/null && echo vim || echo vi)"
-export VISUAL="$EDITOR"
-alias :e='$EDITOR'
+export EDITOR='$(type vim &>/dev/null && echo vim || echo vi)'
+export VISUAL="${EDITOR}"
+alias :e='${EDITOR}'
 
 case $(uname) in
   Linux)
@@ -30,7 +28,9 @@ case $(uname) in
     alias emacs='emacs --color=always'
     unset LESS
     export LS_COLORS="${LS_COLORS//:su*}"
-    [[ $TERM == screen ]] && export TERM=xterm
+    if [[ ${TERM} == screen ]]; then
+      export TERM='xterm'
+    fi
     ;;
 
   *BSD|Darwin)
@@ -44,8 +44,8 @@ alias la='ls -A'
 alias ll='ls -lh'
 alias grep='grep --color=auto'
 
-isempty() { (shopt -s nullglob dotglob; f=($1/*); ((! ${#f[@]}))); }
-retry() { while ! "$@"; do sleep 1; done; }
+isempty() { (shopt -s nullglob dotglob; f=(${1}/*); ((! ${#f[@]}))); }
+retry() { while ! "${@}"; do sleep 1; done; }
 man() {
   env LESS_TERMCAP_mb=$'\E[01;31m' \
   LESS_TERMCAP_md=$'\E[01;38;5;74m' \
@@ -53,64 +53,57 @@ man() {
   LESS_TERMCAP_se=$'\E[0m' \
   LESS_TERMCAP_ue=$'\E[0m' \
   LESS_TERMCAP_us=$'\E[04;38;5;146m' \
-  man "$@"
+  man "${@}"
 }
 
 ## Extra files to exec
-if [[ -n $BASH_VERSION ]] then
+if [[ -n ${BASH_VERSION} ]]; then
   reset_bash_ps1() {
-    local host=""
-    local color="\[\033[0;34m\]"
-
-    if [[ -n $SSH_TTY ]]; then
-      case "$(hostname -f)" in
-        "leim.iix.se")    host="leim.iix.se ";    color="\[\033[0;32m\]" ;;
-        "phii.iix.se")    host="phii.iix.se ";    color="\[\033[0;35m\]" ;;
-        "phoenix.iix.se") host="phoenix.iix.se "; color="\[\033[0;31m\]" ;;
-        *)                host="$HOSTNAME ";      color="\[\033[0;37m\]" ;;
-      esac
-    fi
+    local host="$(hostname -f 2>/dev/null || hostname)"
+    local color="\[\033[0;31m\]"
     PS1="${color}${host}[\\d \\t] [j:\\j|s:\$?]\n\[\033[0;33m\]\\u \\w \\$ \[\033[0m\]"
   }
 
  reset_bash_ps1
- [[ -f /etc/bash_completion ]] && source /etc/bash_completion
+ [[ -f /etc/bash_completion ]] && source '/etc/bash_completion'
 fi
 
 ## LOCALE
 tryfix_utf8() {
   local utf8 us_utf8 wanted_locale charmap
-  utf8="[Uu][Tt][Ff]-?8"
-  us_utf8="^en_US\.$utf8$"
-  warn() { echo -e "\033[1;33mWarning:\033[0m $1"; }
+  utf8='[Uu][Tt][Ff]-?8'
+  us_utf8="en_US\.${utf8}"
+  warn() { echo -e "\033[1;33mWarning:\033[0m ${1}"; }
 
 
-  if [[ ! $LANG =~ $us_utf8 ]]; then
-    wanted_locale=$(locale -a | awk "/$us_utf8/{print;exit}")
-    if [[ -z $wanted_locale ]]; then
-      warn "Could not find any en_US.UTF-8 locale. (Currently: $LANG)"
+  if [[ ! $LANG =~ "^$us_utf8$" ]]; then
+    wanted_locale="$(locale -a | awk "/^${us_utf8}$/{print;exit}")"
+    if [[ -z ${wanted_locale} ]]; then
+      warn "Could not find any en_US.UTF-8 locale. (Currently: ${LANG})"
     else
-      export LANG=$wanted_locale
-      if [[ ! $(locale LC_TIME | tail -n 1)  == "UTF-8" ]]; then
+      export LANG="${wanted_locale}"
+      if [[ ! $(locale | awk "/LC_TIME=\"${us_utf8}\"/{print;exit}") == "UTF-8" ]]; then
         warn "Had to force set LC_ALL, encoding might not work"
-        export LC_ALL=$wanted_locale
+        export LC_ALL="${wanted_locale}"
       fi
     fi
   fi
 
-  charmap=$(locale charmap)
-  [[ $charmap =~ $utf8 ]] || warn "Charmap is $charmap"
+  charmap="$(locale charmap 2>/dev/null)"
+  if [[ ! ${charmap} =~ ${utf8} && ! -z ${charmap} ]]; then
+    warn "Charmap is ${charmap}"
+  fi
 
   unset warn
 }
 tryfix_utf8
 
 init_stty_settings() {
-  local stty_settings="stty start undef; stty stop undef"
-  alias reset="/usr/bin/reset; $stty_settings"
-  alias reset1="/usr/bin/reset -e ^?; $stty_settings"
-  alias reset2="/usr/bin/reset -e ^h; $stty_settings"
-  eval "$stty_settings"
+  local stty_settings='stty start undef; stty stop undef'
+  alias reset="/usr/bin/reset; ${stty_settings}"
+  alias reset1="/usr/bin/reset -e ^?; ${stty_settings}"
+  alias reset2="/usr/bin/reset -e ^h; ${stty_settings}"
+  eval "${stty_settings}"
 }
 init_stty_settings
 
@@ -126,7 +119,7 @@ if type apt-get &> /dev/null; then
 fi
 
 if type as &> /dev/null; then
-  asm() { as -o "${1%.*}.o" "$1" && ld -o "${1%.*}" "${1%.*}.o"; }
+  asm() { as -o "${1%.*}.o" "${1}" && ld -o "${1%.*}" "${1%.*}.o"; }
 fi
 
 if type clang &> /dev/null; then
@@ -157,7 +150,7 @@ if type git &> /dev/null; then
 fi
 
 if type nasm &> /dev/null; then
-  asm32() { nasm -f elf32 "$1" && ld -m elf_i386 -o "${1%.*}" "${1%.*}.o"; }
+  asm32() { nasm -f elf32 "${1}" && ld -m elf_i386 -o "${1%.*}" "${1%.*}.o"; }
 fi
 
 if type pacman &> /dev/null; then
