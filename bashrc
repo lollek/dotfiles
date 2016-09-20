@@ -33,7 +33,7 @@ case $(uname) in
     fi
     ;;
 
-  *BSD|Darwin)
+  FreeBSD|Darwin)
     alias ls='ls -G'
     ;;
 esac
@@ -60,8 +60,9 @@ man() {
 if [[ -n ${BASH_VERSION} ]]; then
   reset_bash_ps1() {
     local host="$(hostname -f 2>/dev/null || hostname)"
-    local color="\[\033[0;31m\]"
-    PS1="${color}${host}[\\d \\t] [j:\\j|s:\$?]\n\[\033[0;33m\]\\u \\w \\$ \[\033[0m\]"
+    local line1="\[\033[0;31m\]${host} \[\033[0;34m\][\w]\[\033[0m\]"
+    local line2="\$ "
+    PS1="${line1}"$'\n'"${line2}"
   }
 
  reset_bash_ps1
