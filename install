@@ -26,18 +26,13 @@ for arg in ${@}; do
         srcname="$PWD/$dotfilename"
         dstname="$HOME/.$dotfilename"
 
-        if [[ -h "$dstname" ]]; then
-          if [[ $(readlink $dstname) != $srcname ]]; then
-            \ln -sfv -- "$srcname" "$dstname"
-          fi
-
-        elif [[ -e "$dstname" ]]; then
-          \mv -v -- "$dstname" "$dstname.backup.$(date -I)"
-          \ln -sv -- "$srcname" "$dstname"
-
-        else
-          \ln -sv -- "$srcname" "$dstname"
+        if [[ -f "$dstname" && ! -h "$dstname" ]]; then
+          echo "Move $dstname -> $dstname.backup.$(date +%F)"
+          mv -- "$dstname" "$dstname.backup.$(date +%F)"
         fi
+
+        echo "Symlink $srcname -> $dstname"
+        ln -sf -- "$srcname" "$dstname"
       done
 
       if [[ ! -e $HOME/.bash_profile ]]; then
