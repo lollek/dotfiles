@@ -56,22 +56,26 @@ man() {
   man "$@"
 }
 
-reset_bash_ps1() {
-  local host=""
-  local color="\[\033[0;34m\]"
+## Extra files to exec
+if [[ -n $BASH_VERSION ]] then
+  reset_bash_ps1() {
+    local host=""
+    local color="\[\033[0;34m\]"
 
-  if [[ -n $SSH_TTY ]]; then
-    case "$(hostname -f)" in
-      "leim.iix.se")    host="leim.iix.se ";    color="\[\033[0;32m\]" ;;
-      "phii.iix.se")    host="phii.iix.se ";    color="\[\033[0;35m\]" ;;
-      "phoenix.iix.se") host="phoenix.iix.se "; color="\[\033[0;31m\]" ;;
-      *)                host="$HOSTNAME ";      color="\[\033[0;37m\]" ;;
-    esac
-  fi
-  PS1="${color}${host}[\\d \\t] [j:\\j|s:\$?]\n\[\033[0;33m\]\\u \\w \\$ \[\033[0m\]"
-}
-[[ -n $BASH_VERSION  ]] && reset_bash_ps1
+    if [[ -n $SSH_TTY ]]; then
+      case "$(hostname -f)" in
+        "leim.iix.se")    host="leim.iix.se ";    color="\[\033[0;32m\]" ;;
+        "phii.iix.se")    host="phii.iix.se ";    color="\[\033[0;35m\]" ;;
+        "phoenix.iix.se") host="phoenix.iix.se "; color="\[\033[0;31m\]" ;;
+        *)                host="$HOSTNAME ";      color="\[\033[0;37m\]" ;;
+      esac
+    fi
+    PS1="${color}${host}[\\d \\t] [j:\\j|s:\$?]\n\[\033[0;33m\]\\u \\w \\$ \[\033[0m\]"
+  }
 
+ reset_bash_ps1
+ [[ -f /etc/bash_completion ]] && source /etc/bash_completion
+fi
 
 ## LOCALE
 tryfix_utf8() {
@@ -160,5 +164,3 @@ if type pacman &> /dev/null; then
   alias pacman='pacman --color=auto'
 fi
 
-## Extra files to exec
-[[ -f /etc/bash_completion ]] && source /etc/bash_completion
