@@ -1,12 +1,13 @@
 [user]
 	email = olle+git@iix.se
 	name = Olle Kvarnström
-	signingkey = 02FDDED4
+	signingkey = EB1DA6F04FA5514C
 [push]
 	default = current
 [core]
 	editor = vim
 	excludesfile = ~/.gitignore_global
+	autocrlf = input
 [color]
 	ui = true
 [pretty]
