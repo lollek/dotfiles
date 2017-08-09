@@ -79,4 +79,5 @@ endif
 " let g:is_bash=1 " Shell usually means bash
 filetype plugin indent on
 autocmd FileType python setlocal shiftwidth=4 softtabstop=4
+autocmd FileType swift setlocal shiftwidth=4 softtabstop=4
 autocmd FileType asm setlocal noexpandtab shiftwidth=8 softtabstop=8
