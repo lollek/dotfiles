@@ -23,8 +23,8 @@ set lazyredraw                    " Make vim not flush screen during e.g. macros
 """ Formatting
 set autoindent                    " Copy indent from current line to new line
 " set smartindent                 " Add extra indent from time to time
-set softtabstop=2                 " 2 space indents
-set shiftwidth=2                  " 2 space indents
+set softtabstop=4                 " 4 space indents
+set shiftwidth=4                  " 4 space indents
 set expandtab                     " Type spaces instead of tabs
 set textwidth=80                  " Wrap at 80 chars
 set foldmethod=syntax             " Try to fold (=hide) information
@@ -67,9 +67,9 @@ elseif isdirectory(glob("~/.vim/bundle"))
   call vundle#begin()
 
   " Plugins
-  Plugin 'VundleVim/Vundle.vim'
-  Plugin 'Valloric/YouCompleteMe'
-  Plugin 'ctrlpvim/ctrlp.vim'
+  " Plugin 'VundleVim/Vundle.vim'
+  " Plugin 'Valloric/YouCompleteMe'
+  " Plugin 'ctrlpvim/ctrlp.vim'
 
   call vundle#end()
   filetype plugin indent on
