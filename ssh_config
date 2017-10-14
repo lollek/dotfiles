@@ -26,5 +26,9 @@ Host leim
   Port 50022
 Host gw
   User root
-Host burm
+Host gw.0
   User root
+Host burm
+  User admin
+Host burm.0
+  User admin
