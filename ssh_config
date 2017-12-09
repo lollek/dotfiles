@@ -6,7 +6,6 @@ Host *
   IdentityFile ~/.ssh/id_rsa
   ServerAliveInterval 60
   Compression      yes
-  CompressionLevel 4
 Host github
   Hostname github.com
   User git
@@ -24,11 +23,9 @@ Host hashbang.sh
 Host leim
   Hostname localhost
   Port 50022
-Host gw
+Host gw gw.0
   User root
-Host gw.0
-  User root
-Host burm
+Host burm burm.0
   User admin
-Host burm.0
-  User admin
+Host retropie
+  User pi
