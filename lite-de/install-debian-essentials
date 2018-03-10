@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+
+sudo apt install git curl zsh vim screen build-essential apt-file ranger
+chsh -s /bin/zsh

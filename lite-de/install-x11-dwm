@@ -1,0 +1,30 @@
+#! /usr/bin/env bash
+
+# Dependencies
+sudo apt install libx11-dev libxft-dev libxinerama-dev
+
+# Sources
+mkdir $HOME/src
+cd $HOME/src
+git clone https://git.suckless.org/dwm
+git clone https://git.suckless.org/dmenu
+git clone https://git.suckless.org/st
+
+# Distribute patches
+cd -
+cp dwm/colors.20180310.patch $HOME/src/dwm
+cp st/colors.20180310.patch $HOME/src/st
+
+# dwm
+cd $HOME/src/dwm
+patch < colors.20180310.patch
+make && sudo make install
+
+# dmenu
+cd $HOME/src/dmenu
+make && sudo make install
+
+# st
+cd $HOME/src/st
+patch < colors.20180310.patch
+make && sudo make install

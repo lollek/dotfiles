@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+sudo apt install openbox tint2
+
+cp -R /etc/xdg/openbox $HOME/.config
+
+## Add autostart
+echo '# feh --bg-scale /path/to/file &' >> $HOME/.config/openbox/autostart
+echo 'tint2 &' >> $HOME/.config/openbox/autostart
+
+## Add theme
+mkdir $HOME/.themes
+mkdir $HOME/src
+cd $HOME/src
+git clone https://github.com/capn-damo/themes capndamo-themes
+ln -s $HOME/src/capndamo-themes/FlatSlate $HOME/.themes/
+cd -

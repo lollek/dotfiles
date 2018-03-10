@@ -2,47 +2,64 @@
 set -euo pipefail
 
 bad_usage() {
-  echo "USAGE: ${0} COMMAND" >&2
-  echo 'Available commands:' >&2
-  echo '  pathogen dotfiles' >&2
-  exit 1
+    echo "USAGE: ${0} COMMAND" >&2
+    echo 'Available commands:' >&2
+    echo '  pathogen dotfiles' >&2
+    exit 1
 }
 
 if [[ ${#@} -eq 0 ]]; then
-  bad_usage
+    bad_usage
 fi
 
 for arg in ${@}; do
-  case ${1} in
-    'pathogen')
-      mkdir -p ${HOME}/.vim/{autoload,pathogen-bundle}
-      curl -LSso ${HOME}/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-      ;;
+    case ${1} in
+        'pathogen')
+            mkdir -p ${HOME}/.vim/{autoload,pathogen-bundle}
+            curl -LSso ${HOME}/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+            ;;
 
-    'dotfiles')
-      start_pwd="$PWD"
-      \cd "$(dirname $0)"
-      for dotfilename in bashrc emacs gitconfig screenrc vimrc zshrc; do
-        srcname="$PWD/$dotfilename"
-        dstname="$HOME/.$dotfilename"
+        'dotfiles')
+            start_pwd="$PWD"
+            \cd "$(dirname $0)"
 
-        if [[ -f "$dstname" && ! -h "$dstname" ]]; then
-          echo "Move $dstname -> $dstname.backup.$(date +%F)"
-          mv -- "$dstname" "$dstname.backup.$(date +%F)"
-        fi
+            for dotfilename in bashrc emacs gitconfig screenrc vimrc zshrc; do
+                srcname="$PWD/$dotfilename"
+                dstname="$HOME/.$dotfilename"
 
-        echo "Symlink $srcname -> $dstname"
-        ln -sf -- "$srcname" "$dstname"
-      done
+                if [[ -f "$dstname" && ! -h "$dstname" ]]; then
+                    echo "Move $dstname -> $dstname.backup.$(date +%F)"
+                    mv -- "$dstname" "$dstname.backup.$(date +%F)"
+                fi
 
-      if [[ ! -e $HOME/.bash_profile ]]; then
-        echo "source .bashrc" > "$HOME/.bash_profile"
-      fi
+                echo "Symlink $srcname -> $dstname"
+                ln -sf -- "$srcname" "$dstname"
+            done
 
-      \cd "$start_pwd"
-      ;;
+            if [[ ! -e $HOME/.bash_profile ]]; then
+                echo "source .bashrc" > "$HOME/.bash_profile"
+            fi
 
-    '-h'|'-help'|'--help') bad_usage ;;
-    *) echo "Unknown command: ${arg}" >&2 exit 1
-  esac
+            \cd "$start_pwd"
+            ;;
+
+        'lite-de')
+            start_pwd="$PWD"
+            \cd "$(dirname $0)/lite-de"
+
+            ./install-debian-essentials
+            ./install-x11-base
+            ./install-x11-openbox
+            ./install-x11-dwm
+            cp xinitrc "$HOME/.xinitrc"
+            mkdir $HOME/bin
+            cp home-bin/* $HOME/bin
+
+            \cd "$start_pwd"
+            ;;
+
+        '-h'|'-help'|'--help') bad_usage ;;
+        *) echo "Unknown command: ${arg}" >&2 exit 1
+    esac
+
 done

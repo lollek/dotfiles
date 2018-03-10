@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Run this through `startx $HOME/.xinitrc dwm/openbox/...`
+
+# invoke global X session script
+#. /etc/X11/Xsession
+
+# dwm
+case $1 in
+    dwm)
+        while true
+        do
+            xsetroot -name "$(date)"
+            sleep 1
+        done &
+        exec /usr/local/bin/dwm
+        ;;
+
+    openbox)
+        exec openbox-session
+        ;;
+esac
+
+# openbox
+#exec openbox-session;;
