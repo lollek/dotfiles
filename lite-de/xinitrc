@@ -5,12 +5,13 @@
 # invoke global X session script
 #. /etc/X11/Xsession
 
-# dwm
+setxkbmap us -variant altgr-intl -option nodeadkeys
+
 case $1 in
     dwm)
         while true
         do
-            xsetroot -name "$(date)"
+            xsetroot -name "$(date +'%a %b %d %R')"
             sleep 1
         done &
         exec /usr/local/bin/dwm
@@ -20,6 +21,3 @@ case $1 in
         exec openbox-session
         ;;
 esac
-
-# openbox
-#exec openbox-session;;
