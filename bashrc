@@ -131,6 +131,10 @@ if type clang &> /dev/null; then
   alias clang++11='clang++ -std=c++11'
 fi
 
+if type ctags &> /dev/null; then
+  alias ctags-generate='ctags -R . --exclude .git'
+fi
+
 if type g++ &> /dev/null; then
   alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++'
   alias g++99='g++ -std=c++99'
