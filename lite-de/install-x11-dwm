@@ -1,30 +1,21 @@
 #! /usr/bin/env bash
 
 # Dependencies
-sudo apt install libx11-dev libxft-dev libxinerama-dev
+sudo apt install libx11-dev libxft-dev libxinerama-dev libwebkit2gtk-4.0-dev \
+    libgcr-3-dev
 
 # Sources
 mkdir $HOME/src
 cd $HOME/src
-git clone https://git.suckless.org/dwm
-git clone https://git.suckless.org/dmenu
-git clone https://git.suckless.org/st
 
-# Distribute patches
-cd -
-cp dwm/colors.20180310.patch $HOME/src/dwm
-cp st/colors.20180310.patch $HOME/src/st
+git clone https://github.com/lollek/dwm.git
+cd dwm && make && sudo make install && cd ..
 
-# dwm
-cd $HOME/src/dwm
-patch < colors.20180310.patch
-make && sudo make install
+git clone https://github.com/lollek/dmenu.git
+cd dmenu && make && sudo make install && cd ..
 
-# dmenu
-cd $HOME/src/dmenu
-make && sudo make install
+git clone https://github.com/lollek/st.git
+cd st && make && sudo make install && cd ..
 
-# st
-cd $HOME/src/st
-patch < colors.20180310.patch
-make && sudo make install
+git clone https://github.com/lollek/surf.git
+cd surf && make && sudo make install && cd ..
