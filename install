@@ -51,6 +51,7 @@ for arg in ${@}; do
             ./install-x11-base
             ./install-x11-openbox
             ./install-x11-dwm
+            ./install-x11-essentials
             cp xinitrc "$HOME/.xinitrc"
             mkdir $HOME/bin
             cp home-bin/* $HOME/bin
