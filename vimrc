@@ -9,7 +9,7 @@ colorscheme peachpuff             " Colorscheme - peachpuff and delek are OK
 syntax on                         " Syntax highlighting
 " Fix black Pmenu
 highlight Pmenu ctermfg=15 ctermbg=0 guifg=#ffffff guibg=#000000
-set list listchars=trail:~,tab:>. " Show tabs/trailing whitespace
+set list listchars=trail:~,tab:>_ " Show tabs/trailing whitespace
 set scrolloff=4                   " Tries to keep cursor a bit centered
 
 set ruler                         " Shows cursor position in lowerright corner
