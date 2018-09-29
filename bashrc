@@ -74,6 +74,23 @@ if [[ -n ${BASH_VERSION} ]]; then
 fi
 
 ## LOCALE
+# Ideally, we would want these values in the future:
+#
+# LANG=en_US.UTF-8                  # To make everything use the same language
+# LANGUAGE=en_US:en                 # To make everything use the same language
+# LC_ADDRESS=sv_SE.UTF-8
+# LC_COLLATE=C                      # There are sometimes weird bugs when not C
+# LC_CTYPE=C                        # There are sometimes weird bugs when not C
+# LC_IDENTIFICATION=sv_SE.UTF-8
+# LC_MONETARY=sv_SE.UTF-8
+# LC_MESSAGES=en_US.UTF-8           # To make everything use the same language
+# LC_MEASUREMENT=sv_SE.UTF-8        # Anything exception en_US is fine here
+# LC_NAME=sv_SE.UTF-8
+# LC_NUMERIC=en_US.UTF-8            # Can cause a lot of bugs when not US
+# LC_PAPER=sv_SE.UTF-8
+# LC_TELEPHONE=sv_SE.UTF-8
+# LC_TIME=sv_SE.UTF-8
+##
 o_init_locale() {
     warn() { echo -e "\033[1;33mWarning:\033[0m ${1}"; }
 
