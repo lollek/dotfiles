@@ -14,6 +14,7 @@ export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;4
 export EDITOR="$(type vim &>/dev/null && echo vim || echo vi)"
 export VISUAL="${EDITOR}"
 alias :e='${EDITOR}'
+
 export GOPATH="${HOME}/go"
 
 case $(uname) in
@@ -73,6 +74,43 @@ if [[ -n ${BASH_VERSION} ]]; then
 fi
 
 ## LOCALE
+o_setup_locale() {
+    warn() { echo -e "\033[1;33mWarning:\033[0m ${1}"; }
+
+    local utf8_re='[Uu][Tt][Ff]-?8'
+
+    # Try to set LANG to en_US
+    local us_utf8_re="en_US\.${utf8_re}"
+    local wanted_lang="$(locale -a | awk "/^${us_utf8_re}$/{print;exit}")"
+    if [[ -z ${wanted_lang} ]]; then
+      warn "Could not find any en_US.UTF-8 locale. (Currently: ${LANG})"
+    else
+      export LANG="${wanted_lang}"
+    fi
+
+    # Try to set LC_* to sv_SE
+    local se_utf8_re="sv_SE\.${utf8_re}"
+    local wanted_lc="$(locale -a | awk "/^${se_utf8_re}$/{print;exit}")"
+    if [[ -z ${wanted_lc} ]]; then
+      warn "Could not find any sv_SE.UTF-8 locale. (Currently: $(locale | awk "/^LC_\w+=\"/{print;exit}"))"
+    else
+        export LC_CTYPE="${wanted_lc}"
+        export LC_NUMERIC="${wanted_lc}"
+        export LC_TIME="${wanted_lc}"
+        export LC_COLLATE="${wanted_lc}"
+        export LC_MONETARY="${wanted_lc}"
+        export LC_MESSAGES="${wanted_lc}"
+        export LC_PAPER="${wanted_lc}"
+        export LC_NAME="${wanted_lc}"
+        export LC_ADDRESS="${wanted_lc}"
+        export LC_TELEPHONE="${wanted_lc}"
+        export LC_MEASUREMENT="${wanted_lc}"
+        export LC_IDENTIFICATION="${wanted_lc}"
+    fi
+}
+o_setup_locale
+
+# Keep this since it used to work really well
 o_tryfix_utf8() {
   local utf8 us_utf8 wanted_locale charmap
   utf8='[Uu][Tt][Ff]-?8'
@@ -100,7 +138,7 @@ o_tryfix_utf8() {
 
   unset warn
 }
-o_tryfix_utf8
+#o_tryfix_utf8
 
 o_init_stty_settings() {
   local stty_settings='stty start undef; stty stop undef'
