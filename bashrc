@@ -61,19 +61,19 @@ man() {
 
 ## Extra files to exec
 if [[ -n ${BASH_VERSION} ]]; then
-  reset_bash_ps1() {
+  o_reset_bash_ps1() {
     local host="$(hostname -f 2>/dev/null || hostname)"
     local line1="\[\033[0;31m\]${host} \[\033[0;34m\][\w]\[\033[0m\]"
     local line2="\$ "
     PS1="${line1}"$'\n'"${line2}"
   }
 
- reset_bash_ps1
+ o_reset_bash_ps1
  [[ -f /etc/bash_completion ]] && source '/etc/bash_completion'
 fi
 
 ## LOCALE
-tryfix_utf8() {
+o_tryfix_utf8() {
   local utf8 us_utf8 wanted_locale charmap
   utf8='[Uu][Tt][Ff]-?8'
   us_utf8="en_US\.${utf8}"
@@ -100,16 +100,16 @@ tryfix_utf8() {
 
   unset warn
 }
-tryfix_utf8
+o_tryfix_utf8
 
-init_stty_settings() {
+o_init_stty_settings() {
   local stty_settings='stty start undef; stty stop undef'
   alias reset="/usr/bin/reset; ${stty_settings}"
   alias reset1="/usr/bin/reset -e ^?; ${stty_settings}"
   alias reset2="/usr/bin/reset -e ^h; ${stty_settings}"
   eval "${stty_settings}"
 }
-init_stty_settings
+o_init_stty_settings
 
 ## Special application settings
 
