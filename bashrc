@@ -74,71 +74,31 @@ if [[ -n ${BASH_VERSION} ]]; then
 fi
 
 ## LOCALE
-o_setup_locale() {
+o_init_locale() {
     warn() { echo -e "\033[1;33mWarning:\033[0m ${1}"; }
 
-    local utf8_re='[Uu][Tt][Ff]-?8'
+    local utf8='[Uu][Tt][Ff]-?8'
+    local us_utf8="en_US\.${utf8}"
 
-    # Try to set LANG to en_US
-    local us_utf8_re="en_US\.${utf8_re}"
-    local wanted_lang="$(locale -a | awk "/^${us_utf8_re}$/{print;exit}")"
-    if [[ -z ${wanted_lang} ]]; then
-      warn "Could not find any en_US.UTF-8 locale. (Currently: ${LANG})"
-    else
-      export LANG="${wanted_lang}"
-    fi
-
-    # Try to set LC_* to sv_SE
-    local se_utf8_re="sv_SE\.${utf8_re}"
-    local wanted_lc="$(locale -a | awk "/^${se_utf8_re}$/{print;exit}")"
-    if [[ -z ${wanted_lc} ]]; then
-      warn "Could not find any sv_SE.UTF-8 locale. (Currently: $(locale | awk "/^LC_\w+=\"/{print;exit}"))"
-    else
-        export LC_CTYPE="${wanted_lc}"
-        export LC_NUMERIC="${wanted_lc}"
-        export LC_TIME="${wanted_lc}"
-        export LC_COLLATE="${wanted_lc}"
-        export LC_MONETARY="${wanted_lc}"
-        export LC_MESSAGES="${wanted_lc}"
-        export LC_PAPER="${wanted_lc}"
-        export LC_NAME="${wanted_lc}"
-        export LC_ADDRESS="${wanted_lc}"
-        export LC_TELEPHONE="${wanted_lc}"
-        export LC_MEASUREMENT="${wanted_lc}"
-        export LC_IDENTIFICATION="${wanted_lc}"
-    fi
-}
-o_setup_locale
-
-# Keep this since it used to work really well
-o_tryfix_utf8() {
-  local utf8 us_utf8 wanted_locale charmap
-  utf8='[Uu][Tt][Ff]-?8'
-  us_utf8="en_US\.${utf8}"
-  warn() { echo -e "\033[1;33mWarning:\033[0m ${1}"; }
-
-
-  if [[ ! $LANG =~ "^$us_utf8$" ]]; then
-    wanted_locale="$(locale -a | awk "/^${us_utf8}$/{print;exit}")"
+    local wanted_locale="$(locale -a | awk "/^${us_utf8}$/{print;exit}")"
     if [[ -z ${wanted_locale} ]]; then
-      warn "Could not find any en_US.UTF-8 locale. (Currently: ${LANG})"
+        warn "Could not find any en_US.UTF-8 locale. (Currently: ${LANG})"
     else
-      export LANG="${wanted_locale}"
-      if [[ ! $(locale | awk "/LC_TIME=\"${us_utf8}\"/{print;exit}") == "UTF-8" ]]; then
-        warn "Had to force set LC_ALL, encoding might not work"
-        export LC_ALL="${wanted_locale}"
-      fi
+        export LANG="${wanted_locale}"
+        if [[ ! $(locale | awk "/LC_\w+=\"${us_utf8}\"/{print \"1\";exit}") ]]; then
+            warn "Had to force set LC_ALL, encoding might not work"
+            export LC_ALL="${wanted_locale}"
+        fi
     fi
-  fi
 
-  charmap="$(locale charmap 2>/dev/null)"
-  if [[ ! ${charmap} =~ ${utf8} && ! -z ${charmap} ]]; then
-    warn "Charmap is ${charmap}"
-  fi
+    local charmap="$(locale charmap 2>/dev/null)"
+    if [[ ! ${charmap} =~ ${utf8} && ! -z ${charmap} ]]; then
+        warn "Charmap is ${charmap}"
+    fi
 
-  unset warn
+    unset warn
 }
-#o_tryfix_utf8
+o_init_locale
 
 o_init_stty_settings() {
   local stty_settings='stty start undef; stty stop undef'
