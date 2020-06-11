@@ -4,6 +4,7 @@
 [[ ${-} != *i* ]] && return
 
 set +o ignoreeof
+shopt -s direxpand # Escapes dollar in tab completion
 
 [[ $PATH == *$HOME/bin* ]] || export PATH="${HOME}/bin:${PATH}"
 export HISTFILE="${HOME}/.histfile"
