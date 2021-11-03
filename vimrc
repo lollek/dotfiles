@@ -81,3 +81,4 @@ filetype plugin indent on
 autocmd FileType python setlocal shiftwidth=4 softtabstop=4
 autocmd FileType swift setlocal shiftwidth=4 softtabstop=4
 autocmd FileType asm setlocal noexpandtab shiftwidth=8 softtabstop=8
+autocmd FileType go setlocal noexpandtab shiftwidth=8 softtabstop=8
