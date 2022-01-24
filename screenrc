@@ -30,3 +30,7 @@ escape ^|\
 
 ## Fix mouse wheel
 termcapinfo xterm* ti@:te@
+
+## Uncomment these if we want a status bar
+hardstatus alwayslastline
+hardstatus string '%{gk}[%{wk}%?%-Lw%?%{=b kR}(%{W}%n*%f %t%?(%u)%?%{=b kR})%{= w}%?%+Lw%?%? %{g}][%{d}%l%{g}][ %{= w}%Y/%m/%d %0C:%s%a%{g} ]%{W}'
