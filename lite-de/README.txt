@@ -1,1 +1,1 @@
-See https://iix.se/#/notes/99
+See https://iix.se/posts/99/
