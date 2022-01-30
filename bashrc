@@ -3,10 +3,19 @@
 ## Drop non-interactive shells
 [[ ${-} != *i* ]] && return
 
+## Make the shell exit if it receives an EOF (Ctrl + D)
+## You can also export IGNOREEOF=5 to require 5 presses
 set +o ignoreeof
-shopt -s direxpand # Escapes dollar in tab completion
 
+## Prevent escaping dollar sign in tab completion
+shopt -s direxpand
+
+## Allow recursive globbing with **
+shopt -s globstar
+
+## Add $HOME/bin to path
 [[ $PATH == *$HOME/bin* ]] || export PATH="${HOME}/bin:${PATH}"
+
 export HISTFILE="${HOME}/.histfile"
 export HISTSIZE='10000'
 export PAGER='less'
@@ -99,14 +108,10 @@ o_init_locale() {
     local us_utf8="en_US\.${utf8}"
 
     local wanted_locale="$(locale -a | awk "/^${us_utf8}$/{print;exit}")"
-    if [[ -z ${wanted_locale} ]]; then
-        warn "Could not find any en_US.UTF-8 locale. (Currently: ${LANG})"
-    else
+    if [[ -n ${wanted_locale} ]]; then
         export LANG="${wanted_locale}"
-        if [[ ! $(locale | awk "/LC_\w+=\"${us_utf8}\"/{print \"1\";exit}") ]]; then
-            warn "Had to force set LC_ALL, encoding might not work"
-            export LC_ALL="${wanted_locale}"
-        fi
+    else
+        warn "Could not find any en_US.UTF-8 locale. (Currently: ${LANG})"
     fi
 
     local charmap="$(locale charmap 2>/dev/null)"
