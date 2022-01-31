@@ -44,6 +44,22 @@ set viminfo=                      " Stop vim from saving crap settings
 """ Neovim features
 if has('nvim')
   tnoremap <Esc> <C-\><C-n>
+
+  "" See https://github.com/junegunn/vim-plug#unix-linux
+  "" Then run :PlugInstall
+  if filereadable(glob("~/.local/share/nvim/site/autoload/plug.vim"))
+      call plug#begin()
+
+      Plug 'junegunn/fzf'
+      Plug 'junegunn/fzf.vim'
+      "" Find fuzzy files with ^P
+      nmap <C-P> :FZF<CR>
+      "" Find fuzzy tags with ^N
+      nmap <C-N> :Tags<CR>
+
+      call plug#end()
+  endif
+
 endif
 
 """ Extra commands
@@ -53,27 +69,10 @@ nnoremap <silent> <Space> :silent noh<Bar>echo<CR>
 nnoremap W :w<CR>
 " `make` with E
 nnoremap E :make<CR>
+" remake ctags with Q
+nnoremap Q :!ctags -R .<CR>
 " sudo save with Sudow
 command Sudow w !sudo tee % >/dev/null
-
-" Prio 1: Try Pathogen if it exists
-if filereadable(glob("~/.vim/autoload/pathogen.vim"))
-  execute pathogen#infect('pathogen-bundle/{}')
-
-" Prio 2: Try Vundle if it exists
-elseif isdirectory(glob("~/.vim/bundle"))
-  set rtp+=~/.vim/bundle/Vundle.vim
-  filetype off
-  call vundle#begin()
-
-  " Plugins
-  " Plugin 'VundleVim/Vundle.vim'
-  " Plugin 'Valloric/YouCompleteMe'
-  " Plugin 'ctrlpvim/ctrlp.vim'
-
-  call vundle#end()
-  filetype plugin indent on
-endif
 
 """ Indenting and Filetypes:
 " let g:is_bash=1 " Shell usually means bash
