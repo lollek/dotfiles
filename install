@@ -4,7 +4,8 @@ set -euo pipefail
 bad_usage() {
     echo "USAGE: ${0} COMMAND" >&2
     echo 'Available commands:' >&2
-    echo '  pathogen dotfiles' >&2
+    echo '  dotfiles' >&2
+    echo '  lite-de' >&2
     exit 1
 }
 
@@ -14,10 +15,6 @@ fi
 
 for arg in ${@}; do
     case ${1} in
-        'pathogen')
-            mkdir -p ${HOME}/.vim/{autoload,pathogen-bundle}
-            curl -LSso ${HOME}/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-            ;;
 
         'dotfiles')
             start_pwd="$PWD"
