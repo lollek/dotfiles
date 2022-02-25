@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
 
 sudo apt install git curl zsh vim screen build-essential apt-file ranger \
-    silversearcher-ag ctags
+    silversearcher-ag ctags tig
 chsh -s /bin/zsh
