@@ -20,7 +20,7 @@ for arg in ${@}; do
             start_pwd="$PWD"
             \cd "$(dirname $0)"
 
-            for dotfilename in bashrc emacs gitconfig screenrc vimrc zshrc; do
+            for dotfilename in bashrc emacs gitconfig screenrc vimrc zshrc tmux.conf; do
                 srcname="$PWD/$dotfilename"
                 dstname="$HOME/.$dotfilename"
 
