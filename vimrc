@@ -59,12 +59,14 @@ if has('nvim')
       "" Find fuzzy tags with ^N
       nmap <C-N> :Tags<CR>
       
-      "" Theme                                                                                                                                                                           
-      Plug 'morhetz/gruvbox'                                                                                                                                                             
-      let g:gruvbox_italic=1                                                                                                                                                             
-      let g:gruvbox_termcolors=16                                                                                                                                                        
-      set nocursorline                                                                                                                                                                   
-      autocmd vimenter * ++nested colorscheme gruvbox     
+      "" Theme
+      set t_Co=256
+      set background=light
+      set termguicolors
+      Plug 'morhetz/gruvbox'
+      let g:gruvbox_italic=1
+      autocmd vimenter * ++nested colorscheme gruvbox
+
 
       call plug#end()
   endif
