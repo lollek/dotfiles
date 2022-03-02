@@ -50,6 +50,7 @@ if has('nvim')
   if filereadable(glob("~/.local/share/nvim/site/autoload/plug.vim"))
       call plug#begin()
 
+      "" FZF
       Plug 'junegunn/fzf'
       Plug 'junegunn/fzf.vim'
       "" Find fuzzy files with ^P
