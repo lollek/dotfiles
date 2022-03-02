@@ -72,7 +72,7 @@ endif
 
 """ Extra commands
 " Press space to quit search:
-nnoremap <silent> <Space> :silent noh<Bar>echo<CR>
+nnoremap <silent> <Space> :noh<CR>
 " Save with W
 nnoremap W :w<CR>
 " `make` with E
