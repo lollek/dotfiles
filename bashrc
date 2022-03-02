@@ -177,3 +177,7 @@ if type pacman &> /dev/null; then
     alias pacman='pacman --color=auto'
 fi
 
+if type kubectl &> /dev/null; then
+    source <(kubectl completion bash)
+fi
+
