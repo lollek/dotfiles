@@ -63,8 +63,7 @@ if has('nvim')
       set t_Co=256
       set background=dark
       set termguicolors
-      Plug 'morhetz/gruvbox'
-      let g:gruvbox_italic=1
+      Plug 'lollek/gruvbox.vim'
       autocmd vimenter * ++nested colorscheme gruvbox
 
 
