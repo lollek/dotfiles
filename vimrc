@@ -58,10 +58,10 @@ if has('nvim')
       nmap <C-P> :FZF<CR>
       "" Find fuzzy tags with ^N
       nmap <C-N> :Tags<CR>
-      
+
       "" Theme
       set t_Co=256
-      set background=light
+      set background=dark
       set termguicolors
       Plug 'morhetz/gruvbox'
       let g:gruvbox_italic=1
