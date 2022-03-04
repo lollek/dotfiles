@@ -181,3 +181,7 @@ if type kubectl &> /dev/null; then
     source <(kubectl completion bash)
 fi
 
+if type helm &> /dev/null; then
+    source <(helm completion bash)
+fi
+
