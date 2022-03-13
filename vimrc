@@ -42,6 +42,30 @@ set nowritebackup                 " Don't write backup
 set noswapfile                    " Remove swapfile when done
 set viminfo=                      " Stop vim from saving crap settings
 
+""" Extra commands
+nnoremap <SPACE> <Nop>
+let mapleader = " "
+
+"" Remove highlight after searching
+map <silent> <Leader><Space> :silent noh<Bar>echo<CR>
+
+"" Quick save
+map <Leader>w :w<CR>
+nnoremap W :w<CR>
+
+"" Elevate with sudo and save
+map <Leader>W :!sudo tee % >/dev/null
+command Sudow w !sudo tee % >/dev/null
+
+"" `make`
+map <Leader>e :make<CR>
+nnoremap E :make<CR>
+
+"" remake ctags
+map <Leader>c :!ctags -R .<CR>
+nnoremap Q :!ctags -R .<CR>
+
+
 """ Neovim features
 if has('nvim')
   tnoremap <Esc> <C-\><C-n>
@@ -54,10 +78,17 @@ if has('nvim')
       "" FZF
       Plug 'junegunn/fzf'
       Plug 'junegunn/fzf.vim'
-      "" Find fuzzy files with ^P
+      "" Open fuzzy file finder
+      map <Leader>p :FZF<CR>
       nmap <C-P> :FZF<CR>
-      "" Find fuzzy tags with ^N
+
+      "" Open fuzzy tag finder
+      map <Leader>t :Tags<CR>
       nmap <C-N> :Tags<CR>
+
+      "" NerdTree
+      Plug 'preservim/nerdtree'
+      map <Leader>n :NERDTree<CR>
 
       "" Theme
       set t_Co=256
@@ -71,18 +102,6 @@ if has('nvim')
   endif
 
 endif
-
-""" Extra commands
-" Press space to quit search:
-nnoremap <silent> <Space> :silent noh<Bar>echo<CR>
-" Save with W
-nnoremap W :w<CR>
-" `make` with E
-nnoremap E :make<CR>
-" remake ctags with Q
-nnoremap Q :!ctags -R .<CR>
-" sudo save with Sudow
-command Sudow w !sudo tee % >/dev/null
 
 """ Indenting and Filetypes:
 " let g:is_bash=1 " Shell usually means bash
