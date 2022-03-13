@@ -61,9 +61,12 @@ command Sudow w !sudo tee % >/dev/null
 map <Leader>e :make<CR>
 nnoremap E :make<CR>
 
-"" remake ctags
+"" Recreate ctags
 map <Leader>c :!ctags -R .<CR>
 nnoremap Q :!ctags -R .<CR>
+
+"" Hacky solution to pasting without yanking
+map <Leader>p "_dP
 
 
 """ Neovim features
