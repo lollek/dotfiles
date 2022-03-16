@@ -51,19 +51,15 @@ map <silent> <Leader><Space> :silent noh<Bar>echo<CR>
 
 "" Quick save
 map <Leader>w :w<CR>
-nnoremap W :w<CR>
 
 "" Elevate with sudo and save
 map <Leader>W :!sudo tee % >/dev/null
-command Sudow w !sudo tee % >/dev/null
 
 "" `make`
 map <Leader>e :make<CR>
-nnoremap E :make<CR>
 
 "" Recreate ctags
 map <Leader>c :!ctags -R .<CR>
-nnoremap Q :!ctags -R .<CR>
 
 "" Hacky solution to pasting without yanking
 map <Leader>p "_dP
@@ -82,12 +78,9 @@ if has('nvim')
       Plug 'junegunn/fzf'
       Plug 'junegunn/fzf.vim'
       "" Open fuzzy file finder
-      map <Leader>p :FZF<CR>
-      nmap <C-P> :FZF<CR>
-
+      map <Leader>f :FZF<CR>
       "" Open fuzzy tag finder
-      map <Leader>t :Tags<CR>
-      nmap <C-N> :Tags<CR>
+      map <Leader>d :Tags<CR>
 
       "" NerdTree
       Plug 'preservim/nerdtree'
