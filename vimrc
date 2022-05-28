@@ -52,6 +52,9 @@ map <silent> <Leader><Space> :silent noh<Bar>echo<CR>
 "" Quick save
 map <Leader>w :w<CR>
 
+"" Quick quit
+map <Leader>q :q<CR>
+
 "" Elevate with sudo and save
 map <Leader>W :!sudo tee % >/dev/null
 
