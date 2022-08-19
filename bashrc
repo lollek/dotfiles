@@ -7,12 +7,6 @@
 ## You can also export IGNOREEOF=5 to require 5 presses
 set +o ignoreeof
 
-## Prevent escaping dollar sign in tab completion
-shopt -s direxpand
-
-## Allow recursive globbing with **
-shopt -s globstar
-
 ## Add $HOME/bin to path
 [[ $PATH == *$HOME/bin* ]] || export PATH="${HOME}/bin:${PATH}"
 
@@ -81,6 +75,12 @@ if [[ -n ${BASH_VERSION} ]]; then
 
     o_reset_bash_ps1
     [[ -f /etc/bash_completion ]] && source '/etc/bash_completion'
+
+    ## Prevent escaping dollar sign in tab completion
+    shopt -s direxpand
+
+    ## Allow recursive globbing with **
+    shopt -s globstar
 fi
 
 ## LOCALE
