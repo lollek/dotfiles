@@ -13,12 +13,12 @@ if [[ ${#@} -eq 0 ]]; then
     bad_usage
 fi
 
-for arg in ${@}; do
-    case ${1} in
+for arg in "${@}"; do
+    case $arg in
 
         'dotfiles')
             start_pwd="$PWD"
-            \cd "$(dirname $0)"
+            \cd "$(dirname "$0")"
 
             for dotfilename in bashrc emacs gitconfig screenrc vimrc zshrc tmux.conf; do
                 srcname="$PWD/$dotfilename"
@@ -37,12 +37,16 @@ for arg in ${@}; do
                 echo "source .bashrc" > "$HOME/.bash_profile"
             fi
 
+            # Neovim
+            mkdir -p "$HOME/.config/nvim"
+            ln -sf "$PWD/vimrc" "$HOME/.config/nvim/init.vim"
+
             \cd "$start_pwd"
             ;;
 
         'lite-de')
             start_pwd="$PWD"
-            \cd "$(dirname $0)/lite-de"
+            \cd "$(dirname "$0")/lite-de"
 
             ./install-debian-essentials
             ./install-x11-base
@@ -50,14 +54,19 @@ for arg in ${@}; do
             ./install-x11-dwm
             ./install-x11-essentials
             cp xinitrc "$HOME/.xinitrc"
-            mkdir $HOME/bin
-            cp home-bin/* $HOME/bin
+            mkdir "$HOME/bin"
+            cp home-bin/* "$HOME/bin"
 
             \cd "$start_pwd"
             ;;
 
-        '-h'|'-help'|'--help') bad_usage ;;
-        *) echo "Unknown command: ${arg}" >&2 exit 1
-    esac
+        '-h'|'-help'|'--help')
+            bad_usage
+            ;;
 
+        *)
+            echo "Unknown command: ${arg}" >&2
+            exit 1
+            ;;
+    esac
 done
