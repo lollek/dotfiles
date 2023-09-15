@@ -7,8 +7,12 @@
 ## You can also export IGNOREEOF=5 to require 5 presses
 set +o ignoreeof
 
-## Add $HOME/bin to path
-[[ $PATH == *$HOME/bin* ]] || export PATH="${HOME}/bin:${PATH}"
+## Append some paths to $PATH
+for subpath in "$HOME/bin" "$HOME/go/bin"; do
+    if [[ -d "$subpath" ]] && [[ ":$PATH:" != *":$subpath:"* ]]; then
+        export PATH="$subpath:${PATH}"
+    fi
+done
 
 export HISTFILE="${HOME}/.histfile"
 export HISTSIZE='10000'
