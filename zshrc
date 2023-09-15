@@ -57,3 +57,11 @@ setopt HIST_IGNORE_DUPS    # Don't add duplicates to hist
 setopt NOTIFY              # Report background job status immediately
 setopt NOMATCH             # Error no failed pattern matching
 
+## PAST THIS IS ONLY FOR COMPUTER
+if [[ -d "/opt/homebrew/opt/nvm" ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+else
+    echo "Error! /opt/homebrew/opt/nvm: folder not found!"
+fi

@@ -1,20 +1,50 @@
-[user]
-	email = olle+git@iix.se
-	name = Olle Aid Kvarnström
-	signingkey = EB1DA6F04FA5514C
-[push]
-	default = current
-[core]
-	editor = vim
-	excludesfile = ~/.gitignore_global
-	autocrlf = input
-[color]
-	ui = true
-[pretty]
-	fixes = Fixes: %h (\"%s\")
 [alias]
 	append = "commit --amend --no-edit"
 	cdiff = "diff --cached"
 	ignore = "!gi() { curl -Ls https://www.gitignore.io/api/$@ ;}; gi"
 	graph = "log --graph --decorate=full"
-	ff = "pull --ff-only"
+[branch]
+	sort = -committerdate
+[color]
+	ui = true
+[commit]
+	gpgsign = true
+	template = /Users/olleai/.gitmessage
+	verbose = true
+[core]
+	editor = vim
+	excludesfile = ~/.gitignore_global
+	autocrlf = input
+[diff]
+	algorithm = histogram
+[fetch]
+	prune = true
+	prunetags = true
+[http]
+	postBuffer = 524288000
+[includeIf "gitdir:~/work"]
+	path = ~/dotfiles/gitconfig.local
+[init]
+	defaultBranch = main
+[log]
+	date = iso
+[merge]
+	conflictstyle = diff3
+[pretty]
+	fixes = Fixes: %h (\"%s\")
+[rebase]
+	autosquash = true
+	autostash = true
+[rerere]
+	enabled = true
+[pull]
+	ff = only
+[push]
+	autoSetupRemote = true
+	default = current
+[tag]
+	sort = taggerdate
+[user]
+	email = olle+git@iix.se
+	name = Olle Aid Kvarnström
+	signingkey = EB1DA6F04FA5514C

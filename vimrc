@@ -90,11 +90,11 @@ if has('nvim')
       map <Leader>n :NERDTree<CR>
 
       "" Theme
-      set t_Co=256
-      set background=dark
-      set termguicolors
-      Plug 'lollek/gruvbox.vim'
-      autocmd vimenter * ++nested colorscheme gruvbox
+      " set t_Co=256
+      " set background=dark
+      " set termguicolors
+      " Plug 'lollek/gruvbox.vim'
+      " autocmd vimenter * ++nested colorscheme gruvbox
 
       "" Collection of common configurations for the Nvim LSP client
       Plug 'neovim/nvim-lspconfig'

@@ -8,9 +8,9 @@
 set +o ignoreeof
 
 ## Add extra paths
-for path in "${HOME}/bin" "${HOME}/.local/bin"; do
-    if [[ -d "${path}" && ${PATH} != *"${path}"* ]]; then
-        export PATH="${path}:${PATH}"
+for p in "${HOME}/bin" "${HOME}/.local/bin" "${HOME}/go/bin" "${HOME}/.rd/bin"; do
+    if [[ -d "${p}" && ${PATH} != *"${p}"* ]]; then
+        export PATH="${p}:${PATH}"
     fi
 done
 
@@ -181,19 +181,46 @@ if type git &> /dev/null; then
     alias s='git status -bs'
 fi
 
+if type helm &> /dev/null; then
+    if [[ -n ${BASH_VERSION} ]]; then
+        source <(helm completion bash)
+    elif [[ -n ${ZSH_VERSION} ]]; then
+        source <(helm completion zsh)
+    fi
+fi
+
+if type jq &> /dev/null; then
+    alias jwt="jq -R 'split("'"'.'"'") | .[0:2] | map(@base64d) | map(fromjson)'"
+fi
+
+if type kubectl &> /dev/null; then
+    if [[ -n ${BASH_VERSION} ]]; then
+        source <(kubectl completion bash)
+    elif [[ -n ${ZSH_VERSION} ]]; then
+        source <(kubectl completion zsh)
+    fi
+fi
+
 if type nasm &> /dev/null; then
     asm32() { nasm -f elf32 "${1}" && ld -m elf_i386 -o "${1%.*}" "${1%.*}.o"; }
+fi
+
+if type nix &> /dev/null; then
+    if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+    fi
 fi
 
 if type pacman &> /dev/null; then
     alias pacman='pacman --color=auto'
 fi
 
-if type kubectl &> /dev/null; then
-    source <(kubectl completion bash)
-fi
+alias '.1'='cd ..'
+alias '.2'='cd ../..'
+alias '.3'='cd ../../..'
+alias '.4'='cd ../../../..'
+alias '.5'='cd ../../../../..'
 
-if type helm &> /dev/null; then
-    source <(helm completion bash)
+if [[ -f "$HOME/dotfiles/bashrc.local" ]]; then
+    source "$HOME/dotfiles/bashrc.local"
 fi
-
