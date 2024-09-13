@@ -19,10 +19,15 @@ export HISTSIZE='10000'
 export PAGER='less'
 export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
 
-export EDITOR="$(type vim &>/dev/null && echo vim || echo vi)"
-export VISUAL="${EDITOR}"
-alias :e='${EDITOR}'
+if type nvim &> /dev/null; then
+    export EDITOR=nvim
+elif type vim &> /dev/null; then
+    export EDITOR=vim
+else
+    export EDITOR=vi
+fi
 
+export VISUAL="${EDITOR}"
 export GOPATH="${HOME}/go"
 
 case $(uname) in
