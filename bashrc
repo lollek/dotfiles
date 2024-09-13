@@ -81,8 +81,9 @@ if [[ -n ${BASH_VERSION} ]]; then
         local line2="\$ "
         PS1="${line1}"$'\n'"${line2}"
     }
-
     o_reset_bash_ps1
+    unset o_reset_bash_ps1
+
     [[ -f /etc/bash_completion ]] && source '/etc/bash_completion'
 
     ## Prevent escaping dollar sign in tab completion
@@ -131,6 +132,7 @@ o_init_locale() {
     unset warn
 }
 o_init_locale
+unset o_init_locale
 
 o_init_stty_settings() {
     local stty_settings='stty start undef; stty stop undef'
@@ -140,6 +142,7 @@ o_init_stty_settings() {
     eval "${stty_settings}"
 }
 o_init_stty_settings
+unset o_init_stty_settings
 
 ## Special application settings
 
