@@ -88,12 +88,9 @@ maybe_source() {
 if [[ -n ${BASH_VERSION} ]]; then
     maybe_source "/etc/bash_completion"
     maybe_source "$HOME/dotfiles/scripts/bash_ps1.sh"
-
-    ## Prevent escaping dollar sign in tab completion
-    shopt -s direxpand
-
-    ## Allow recursive globbing with **
-    shopt -s globstar
+    
+    shopt -s direxpand ## Prevent escaping dollar sign in tab completion
+    shopt -s globstar  ## Allow recursive globbing with **
 fi
 
 ## LOCALE
