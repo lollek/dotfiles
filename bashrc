@@ -74,10 +74,6 @@ alias la='ls -A'
 alias ll='ls -lh'
 alias rg=rg.fzf
 
-maybe_source "$HOME/dotfiles/scripts/z.sh"
-maybe_source "$HOME/dotfiles/scripts/fzf-git.sh"
-maybe_source "$HOME/dotfiles/bashrc.local"
-
 isempty() { (shopt -s nullglob dotglob; f=(${1}/*); ((! ${#f[@]}))); }
 retry() { while ! "${@}"; do sleep 1; done; }
 man() {
@@ -94,6 +90,11 @@ maybe_source() {
         source "$1"
     fi
 }
+
+
+maybe_source "$HOME/dotfiles/scripts/z.sh"
+maybe_source "$HOME/dotfiles/scripts/fzf-git.sh"
+maybe_source "$HOME/dotfiles/bashrc.local"
 
 ## Extra files to exec
 if [[ -n ${BASH_VERSION} ]]; then
@@ -221,9 +222,3 @@ fi
 if type nix &> /dev/null; then
     maybe_source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
-
-##################################
-##            Cleanup           ##
-##################################
-
-unalias maybe_source
