@@ -157,10 +157,6 @@ unset o_init_stty_settings
 
 ## Special application settings
 
-if type as &> /dev/null; then
-    asm() { as -o "${1%.*}.o" "${1}" && ld -o "${1%.*}" "${1%.*}.o"; }
-fi
-
 if type clang &> /dev/null; then
     alias clang='clang -Weverything -Werror'
     alias clang++='clang++ -Weverything -Werror'
@@ -196,10 +192,6 @@ if type gcc &> /dev/null; then
     alias gcc11='gcc -std=c11'
 fi
 
-if type ghc &> /dev/null; then
-    alias ghc='ghc --make -Wall'
-fi
-
 if type git &> /dev/null; then
     alias s='git status -bs'
 fi
@@ -230,10 +222,6 @@ fi
 
 if type nix &> /dev/null; then
     maybe_source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-fi
-
-if type pacman &> /dev/null; then
-    alias pacman='pacman --color=auto'
 fi
 
 alias '.1'='cd ..'
