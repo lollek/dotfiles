@@ -205,10 +205,6 @@ if type kubectl &> /dev/null; then
     fi
 fi
 
-if type nasm &> /dev/null; then
-    asm32() { nasm -f elf32 "${1}" && ld -m elf_i386 -o "${1%.*}" "${1%.*}.o"; }
-fi
-
 if type nix &> /dev/null; then
     maybe_source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
