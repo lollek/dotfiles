@@ -161,7 +161,7 @@ if type ctags &> /dev/null; then
 fi
 
 if type delta &> /dev/null; then
-    export DELTA_FEATURES=+side-by-side hyperlinks
+    export DELTA_FEATURES="+side-by-side hyperlinks"
 fi
 
 if type g++ &> /dev/null; then
@@ -194,7 +194,7 @@ if type helm &> /dev/null; then
 fi
 
 if type jq &> /dev/null; then
-    alias jwt="jq -R 'split("'"'.'"'") | .[0:2] | map(@base64d) | map(fromjson)'"
+    jwt() { jq -R 'split(".") | .[0:2] | map(@base64d) | map(fromjson)'; }
 fi
 
 if type kubectl &> /dev/null; then

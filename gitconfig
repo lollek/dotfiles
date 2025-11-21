@@ -9,7 +9,6 @@
 	ui = true
 [commit]
 	gpgsign = true
-	template = /Users/olleai/.gitmessage
 	verbose = true
 [core]
 	editor = vim
@@ -23,8 +22,6 @@
 	prunetags = true
 [http]
 	postBuffer = 524288000
-[includeIf "gitdir:~/work"]
-	path = ~/dotfiles/gitconfig.local
 [init]
 	defaultBranch = main
 [log]
