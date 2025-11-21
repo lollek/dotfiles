@@ -39,7 +39,7 @@ for arg in "${@}"; do
 
             # Neovim
             mkdir -p "$HOME/.config/nvim"
-            ln -sf "$PWD/vimrc" "$HOME/.config/nvim/init.vim"
+            ln -sf "$PWD/nvimrc" "$HOME/.config/nvim/init.vim"
 
             \cd "$start_pwd"
             ;;
