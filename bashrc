@@ -62,10 +62,21 @@ case $(uname) in
         ;;
 esac
 
+alias '.1'='cd ..'
+alias '.2'='cd ../..'
+alias '.3'='cd ../../..'
+alias '.4'='cd ../../../..'
+alias '.5'='cd ../../../../..'
 alias ..='cd ..'
+alias kube=kube.fzf
 alias l='ls -lh'
 alias la='ls -A'
 alias ll='ls -lh'
+alias rg=rg.fzf
+
+maybe_source "$HOME/dotfiles/scripts/z.sh"
+maybe_source "$HOME/dotfiles/scripts/fzf-git.sh"
+maybe_source "$HOME/dotfiles/bashrc.local"
 
 isempty() { (shopt -s nullglob dotglob; f=(${1}/*); ((! ${#f[@]}))); }
 retry() { while ! "${@}"; do sleep 1; done; }
@@ -144,7 +155,9 @@ o_init_stty_settings() {
 o_init_stty_settings
 unset o_init_stty_settings
 
-## Special application settings
+##################################
+## Special application settings ##
+##################################
 
 if type clang &> /dev/null; then
     alias clang='clang -Weverything -Werror'
@@ -209,12 +222,8 @@ if type nix &> /dev/null; then
     maybe_source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
 
-alias '.1'='cd ..'
-alias '.2'='cd ../..'
-alias '.3'='cd ../../..'
-alias '.4'='cd ../../../..'
-alias '.5'='cd ../../../../..'
+##################################
+##            Cleanup           ##
+##################################
 
-maybe_source "$HOME/dotfiles/scripts/z.sh"
-maybe_source "$HOME/dotfiles/scripts/fzf-git.sh"
-maybe_source "$HOME/dotfiles/bashrc.local"
+unalias maybe_source
