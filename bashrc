@@ -222,17 +222,3 @@ fi
 if type nix &> /dev/null; then
     maybe_source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
-
-if type pacman &> /dev/null; then
-    alias pacman='pacman --color=auto'
-fi
-
-alias '.1'='cd ..'
-alias '.2'='cd ../..'
-alias '.3'='cd ../../..'
-alias '.4'='cd ../../../..'
-alias '.5'='cd ../../../../..'
-
-if [[ -f "$HOME/dotfiles/bashrc.local" ]]; then
-    source "$HOME/dotfiles/bashrc.local"
-fi
