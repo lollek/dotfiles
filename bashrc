@@ -160,6 +160,10 @@ if type ctags &> /dev/null; then
     alias ctags-generate='ctags -R . --exclude .git'
 fi
 
+if type delta &> /dev/null; then
+    export DELTA_FEATURES=+side-by-side hyperlinks
+fi
+
 if type g++ &> /dev/null; then
     alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++'
     alias g++99='g++ -std=c++99'
