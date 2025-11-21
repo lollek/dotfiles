@@ -8,7 +8,13 @@
 set +o ignoreeof
 
 ## Add extra paths
-for p in "${HOME}/bin" "${HOME}/.local/bin" "${HOME}/go/bin" "${HOME}/.rd/bin"; do
+for p in \
+    "${HOME}/.local/bin" \
+    "${HOME}/.rd/bin" \
+    "${HOME}/bin" \
+    "${HOME}/dotfiles/bin" \
+    "${HOME}/go/bin"
+do
     if [[ -d "${p}" && ${PATH} != *"${p}"* ]]; then
         export PATH="${p}:${PATH}"
     fi
@@ -72,6 +78,11 @@ man() {
         LESS_TERMCAP_us=$'\E[04;38;5;146m' \
         man "${@}"
 }
+maybe_source() {
+    if [[ -f "$1" ]]; then
+        source "$1"
+    fi
+}
 
 ## Extra files to exec
 if [[ -n ${BASH_VERSION} ]]; then
@@ -84,7 +95,7 @@ if [[ -n ${BASH_VERSION} ]]; then
     o_reset_bash_ps1
     unset o_reset_bash_ps1
 
-    [[ -f /etc/bash_completion ]] && source '/etc/bash_completion'
+    maybe_source "/etc/bash_completion"
 
     ## Prevent escaping dollar sign in tab completion
     shopt -s direxpand
@@ -164,6 +175,14 @@ if type delta &> /dev/null; then
     export DELTA_FEATURES="+side-by-side hyperlinks"
 fi
 
+if type fzf &> /dev/null; then
+    if [[ -n ${BASH_VERSION} ]]; then
+        eval "$(fzf --bash)"
+    elif [[ -n ${ZSH_VERSION} ]]; then
+        source <(fzf --zsh)
+    fi
+fi
+
 if type g++ &> /dev/null; then
     alias g++='g++ -Wall -Wextra -Werror -pedantic -Weffc++'
     alias g++99='g++ -std=c++99'
@@ -210,9 +229,7 @@ if type nasm &> /dev/null; then
 fi
 
 if type nix &> /dev/null; then
-    if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-    fi
+    maybe_source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 fi
 
 if type pacman &> /dev/null; then
@@ -225,6 +242,6 @@ alias '.3'='cd ../../..'
 alias '.4'='cd ../../../..'
 alias '.5'='cd ../../../../..'
 
-if [[ -f "$HOME/dotfiles/bashrc.local" ]]; then
-    source "$HOME/dotfiles/bashrc.local"
-fi
+maybe_source "$HOME/dotfiles/scripts/z.sh"
+maybe_source "$HOME/dotfiles/scripts/fzf-git.sh"
+maybe_source "$HOME/dotfiles/bashrc.local"
