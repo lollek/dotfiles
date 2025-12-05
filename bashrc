@@ -242,6 +242,6 @@ if type pyenv &> /dev/null; then
     if [[ -n ${BASH_VERSION} ]]; then
         eval "$(pyenv init - bash)"
     elif [[ -n ${ZSH_VERSION} ]]; then
-	eval "$(pyenv init - zsh)"
+        eval "$(pyenv init - zsh)"
     fi
 fi
