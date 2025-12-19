@@ -71,7 +71,6 @@ alias l='ls -lh'
 alias la='ls -A'
 alias ll='ls -lh'
 
-isempty() { (shopt -s nullglob dotglob; f=(${1}/*); ((! ${#f[@]}))); }
 retry() { while ! "${@}"; do sleep 1; done; }
 man() {
     env LESS_TERMCAP_mb=$'\E[01;31m' \
