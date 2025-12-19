@@ -91,7 +91,6 @@ maybe_source() {
 }
 
 maybe_source "$HOME/dotfiles/scripts/z.sh"
-maybe_source "$HOME/dotfiles/scripts/fzf-git.sh"
 maybe_source "$HOME/dotfiles/bashrc.local"
 
 if [[ -d /etc/profile.d ]]; then
@@ -207,6 +206,7 @@ if type gcc &> /dev/null; then
 fi
 
 if type git &> /dev/null; then
+    maybe_source "$HOME/dotfiles/scripts/fzf-git.sh"
     alias s='git status -bs'
 fi
 
