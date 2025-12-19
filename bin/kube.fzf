@@ -57,7 +57,7 @@ EOF
 
 case "$command" in
 p) # Pods
-  command='kubectl get pods --sort-by=.metadata.creationTimestamp --all-namespaces'
+  command='kubectl get pods --sort-by=.metadata.creationTimestamp'
   fzf \
     --header-lines 1 --tac --scheme history \
     --border-label ' PODS ' \
@@ -66,17 +66,17 @@ p) # Pods
                        CTRL-Y (copy)        │ CTRL-ALT-X (delete)')" \
     --bind "start:reload:$command" \
     --bind "ctrl-r:reload:$command" \
-    --bind 'ctrl-y:execute-silent(echo -n {2} | pbcopy)' \
-    --bind 'ctrl-alt-x:execute(kubectl delete pod -n {1} {2})' \
+    --bind 'ctrl-y:execute-silent(echo -n {1} | pbcopy)' \
+    --bind 'ctrl-alt-x:execute(kubectl delete pod {1})' \
     --bind 'ctrl-/:change-preview-window(80%,border-bottom|hidden|)' \
-    --bind 'enter:execute:kubectl exec -it --namespace {1} {2} -- bash' \
-    --bind 'ctrl-o:execute:vim -n <(kubectl logs --all-containers --namespace {1} {2})' \
+    --bind 'enter:execute:kubectl exec -it {1} -- bash' \
+    --bind 'ctrl-o:execute:vim -n <(kubectl logs --all-containers {1})' \
     --preview-window bottom,follow \
-    --preview 'kubectl logs --follow --all-containers --tail=10000 --namespace {1} {2}' "$@"
+    --preview 'kubectl logs --follow --all-containers --tail=10000 {1}' "$@"
   ;;
 
 d) # Deployments
-  command='kubectl get deployments --all-namespaces'
+  command='kubectl get deployments'
   fzf \
     --header-lines 1 \
     --border-label ' DEPLOYMENTS ' \
@@ -86,20 +86,20 @@ d) # Deployments
     --bind 'enter:ignore' \
     --bind "start:reload:$command" \
     --bind "ctrl-r:reload:$command" \
-    --bind 'ctrl-o:execute:vim -n <(kubectl logs --namespace {1} deployments/{2})' \
+    --bind 'ctrl-o:execute:vim -n <(kubectl logs deployments/{1})' \
     --bind "ctrl-alt-r:execute(
-              kubectl --namespace {1} rollout restart deployments/{2};
-              kubectl --namespace {1} rollout status deployments/{2}
+              kubectl rollout restart deployments/{1};
+              kubectl rollout status deployments/{1}
             )+reload:$command" \
     --bind "ctrl-alt-x:execute(
-              kubectl --namespace {1} delete deployment {2}
+              kubectl delete deployment {1}
             )+reload:$command" \
     --preview-window bottom,follow \
-    --preview 'kubectl logs --follow --tail=10000 --namespace {1} deployments/{2}'
+    --preview 'kubectl logs --follow --tail=10000 deployments/{1}'
   ;;
 
 j) # Jobs
-  command='kubectl get jobs --sort-by=.metadata.creationTimestamp --all-namespaces'
+  command='kubectl get jobs --sort-by=.metadata.creationTimestamp'
   fzf \
     --header-lines 1 --tac --scheme history \
     --border-label ' JOBS ' \
@@ -108,13 +108,13 @@ j) # Jobs
     --bind 'enter:ignore' \
     --bind "start:reload:$command" \
     --bind "ctrl-r:reload:$command" \
-    --bind 'ctrl-o:execute:vim -n <(kubectl logs --namespace {1} jobs/{2})' \
+    --bind 'ctrl-o:execute:vim -n <(kubectl logs jobs/{1})' \
     --preview-window bottom,follow \
-    --preview 'kubectl logs --follow --tail=10000 --namespace {1} jobs/{2}'
+    --preview 'kubectl logs --follow --tail=10000 jobs/{1}'
   ;;
 
 cj) # CronJobs
-  command='kubectl get cronjobs --all-namespaces'
+  command='kubectl get cronjobs'
   fzf \
     --header-lines 1 --scheme history \
     --border-label ' CRONJOBS ' \
@@ -124,15 +124,15 @@ cj) # CronJobs
     --bind 'enter:ignore' \
     --bind "start:reload:$command" \
     --bind "ctrl-r:reload($command)+refresh-preview" \
-    --bind 'ctrl-t:execute-silent(kubectl create job --namespace {1} --from=cronjob/{2} {2}-manual-$(date +%s))+refresh-preview' \
-    --bind "ctrl-alt-x:execute(kubectl delete cronjob -n {1} {2})+reload:$command" \
+    --bind 'ctrl-t:execute-silent(kubectl create job --from=cronjob/{1} {1}-manual-$(date +%s))+refresh-preview' \
+    --bind "ctrl-alt-x:execute(kubectl delete cronjob {1})+reload:$command" \
     --preview-window bottom,wrap \
     --preview "
-      jobs=\$(kubectl get jobs --namespace {1} -o=jsonpath='{.items[?(@.metadata.ownerReferences[*].name==\"'{2}'\")].metadata.name}')
+      jobs=\$(kubectl get jobs -o=jsonpath='{.items[?(@.metadata.ownerReferences[*].name==\"'{1}'\")].metadata.name}')
       if [[ -n \$jobs ]]; then
-        kubectl get jobs --namespace {1} \$jobs
+        kubectl get jobs \$jobs
         echo
-        kubectl logs --follow --tail=10000 --namespace {1} jobs/\$(echo \$jobs | awk '{print \$NF}')
+        kubectl logs --follow --tail=10000 jobs/\$(echo \$jobs | awk '{print \$NF}')
       fi
     "
   ;;
@@ -144,7 +144,7 @@ sc) # Contexts
     --border-label ' CONTEXTS ' \
     --prompt "$current -> " \
     --tiebreak index --preview-window bottom,20,~1 \
-    --preview 'kubectl get pods --all-namespaces --context {1}' \
+    --preview 'kubectl get pods --context {1}' \
     --bind 'enter:become:echo Switching to {1}; kubectl config set current-context {1}'
   ;;
 
