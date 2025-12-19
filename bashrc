@@ -63,12 +63,10 @@ case $(uname) in
         ;;
 esac
 
-alias '.1'='cd ..'
-alias '.2'='cd ../..'
-alias '.3'='cd ../../..'
-alias '.4'='cd ../../../..'
-alias '.5'='cd ../../../../..'
 alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
 alias l='ls -lh'
 alias la='ls -A'
 alias ll='ls -lh'
