@@ -12,7 +12,8 @@ autoload -Uz bashcompinit && bashcompinit             # Handle bash completions
 
 # Basic settings
 source ~/.bashrc                                      # Import from bash
-export SAVEHIST=10000
+export HISTFILE="$HOME/.zsh_history"                  # I get bugs when trying to change this
+export SAVEHIST=$HISTSIZE
 bindkey -e                                            # Emacs-mode
 PROMPT='%F{red}%M %F{blue}[%~]%f ${vcs_info_msg_0_}
 %# '

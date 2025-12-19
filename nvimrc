@@ -12,6 +12,10 @@ map <Leader>p "_dP
 "" Remove highlight after searching
 map <silent> <Leader><Space> :silent noh<Bar>echo<CR>
 
+"" Visual
+set listchars=tab:>·,trail:~,extends:>,precedes:<
+set list
+
 "" See https://github.com/junegunn/vim-plug#unix-linux
 "" Then run :PlugInstall
 if filereadable(glob("~/.local/share/nvim/site/autoload/plug.vim"))

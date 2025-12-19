@@ -22,7 +22,7 @@ done
 unset p
 
 export HISTFILE="${HOME}/.histfile"
-export HISTSIZE='10000'
+export HISTSIZE='50000'
 export PAGER='less'
 export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
 
