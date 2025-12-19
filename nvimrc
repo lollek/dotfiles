@@ -13,30 +13,38 @@ map <Leader>p "_dP
 map <silent> <Leader><Space> :silent noh<Bar>echo<CR>
 
 "" Visual
-set listchars=tab:>·,trail:~,extends:>,precedes:<
-set list
+set listchars=tab:>·,trail:~,extends:>,precedes:<	" Configure invisible characters
+set list						" Show invisible characters
+set number						" Show line number to the left
+set cursorline						" Highlight current line
 
-"" See https://github.com/junegunn/vim-plug#unix-linux
-"" Then run :PlugInstall
-if filereadable(glob("~/.local/share/nvim/site/autoload/plug.vim"))
-  call plug#begin()
-
-  "" FZF
-  Plug 'junegunn/fzf'
-  Plug 'junegunn/fzf.vim'
-  " Open fuzzy file finder
-  map <Leader>f :FZF<CR>
-  map <Leader>F :FZF ~<CR>
-  " Open fuzzy tag finder
-  map <Leader>d :Tags<CR>
-  map <Leader>r :Rg<CR>
-
-  "" NerdTree
-  Plug 'preservim/nerdtree'
-  map <Leader>n :NERDTree<CR>
-
-  call plug#end()
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+	silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+	autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
+call plug#begin()
+
+"" FZF
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+	" Open fuzzy file finder
+	map <Leader>f :FZF<CR>
+	map <Leader>F :FZF ~<CR>
+	" Open fuzzy tag finder
+	map <Leader>d :Tags<CR>
+	map <Leader>r :Rg<CR>
+
+"" NerdTree
+Plug 'preservim/nerdtree'
+	map <Leader>n :NERDTree<CR>
+
+"" Gruvbox color scheme
+Plug 'morhetz/gruvbox'
+	autocmd vimenter * ++nested colorscheme gruvbox
+
+call plug#end()
 
 autocmd FileType asm setlocal noexpandtab shiftwidth=8 softtabstop=8
 autocmd FileType go setlocal noexpandtab shiftwidth=8 softtabstop=8
