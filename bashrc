@@ -231,10 +231,6 @@ if type kubectl &> /dev/null; then
     fi
 fi
 
-if type nix &> /dev/null; then
-    maybe_source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-fi
-
 if type pyenv &> /dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
     [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
