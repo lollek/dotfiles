@@ -87,9 +87,6 @@ maybe_source() {
     fi
 }
 
-maybe_source "$HOME/dotfiles/scripts/z.sh"
-maybe_source "$HOME/dotfiles/bashrc.local"
-
 if [[ -d /etc/profile.d ]]; then
     for file in /etc/profile.d/*.sh; do
 	source "${file}"
@@ -241,3 +238,7 @@ fi
 if type rg &> /dev/null; then
     alias rz=rg.fzf
 fi
+
+maybe_source "$HOME/dotfiles/scripts/z.sh"
+maybe_source "$HOME/dotfiles/bashrc.local"
+
