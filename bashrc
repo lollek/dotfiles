@@ -236,7 +236,7 @@ if type pyenv &> /dev/null; then
 fi
 
 if type rg &> /dev/null; then
-    alias rz=rg.fzf
+    alias rgz=rg.fzf
 fi
 
 maybe_source "$HOME/dotfiles/scripts/z.sh"
