@@ -1,4 +1,7 @@
 ## Olle K bashrc. Needs to work with zsh as well
+# vi: softtabstop=4
+# vi: shiftwidth=4
+# vi: expandtab
 
 ## Drop non-interactive shells
 [[ ${-} != *i* ]] && return
@@ -89,7 +92,7 @@ maybe_source() {
 
 if [[ -d /etc/profile.d ]]; then
     for file in /etc/profile.d/*.sh; do
-	source "${file}"
+        source "${file}"
     done
     unset file
 fi
@@ -98,13 +101,13 @@ fi
 if [[ -n ${BASH_VERSION} ]]; then
     maybe_source "/etc/bash_completion"
     if [[ -d /etc/bash_completion.d ]]; then
-	for file in /etc/bash_completion.d/*; do
-	    source "${file}"
-	done
+        for file in /etc/bash_completion.d/*; do
+            source "${file}"
+        done
     fi
     unset file
     maybe_source "$HOME/dotfiles/scripts/bash_ps1.sh"
-    
+
     shopt -s direxpand ## Prevent escaping dollar sign in tab completion
     shopt -s globstar  ## Allow recursive globbing with **
 fi
@@ -197,6 +200,21 @@ if type gcc &> /dev/null; then
     alias gcc89='gcc -std=c89'
     alias gcc99='gcc -std=c99'
     alias gcc11='gcc -std=c11'
+fi
+
+if type gh &> /dev/null; then
+    ghwz() {
+        local opener
+        opener='gh run watch {3}'
+        fzf \
+            --query "$1" \
+            --bind "start:reload:gh run list --json status,conclusion,databaseId,event,headBranch,name,startedAt --jq '.[] | [.status, .conclusion, .databaseId, .event, .startedAt, .headBranch, .name] | @tsv' | column -ts $'\t'" \
+            --bind "enter:become:$opener" \
+            --bind "change:unbind:one" \
+            --bind "one:become:$opener" \
+            --preview "gh run view {3}" \
+            --preview-window "up"
+        }
 fi
 
 if type git &> /dev/null; then
