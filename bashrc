@@ -28,6 +28,9 @@ export HISTFILE="${HOME}/.histfile"
 export HISTSIZE='50000'
 export PAGER='less'
 export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
+if type tty &> /dev/null; then
+    export GPG_TTY=$(tty)
+fi
 
 if type nvim &> /dev/null; then
     export EDITOR=nvim
@@ -203,6 +206,11 @@ if type gcc &> /dev/null; then
 fi
 
 if type gh &> /dev/null; then
+    if [[ -n ${BASH_VERSION} ]]; then
+        eval "$(gh completion -s bash)"
+    elif [[ -n ${ZSH_VERSION} ]]; then
+        eval "$(gh completion -s zsh)"
+    fi
     ghwz() {
         local opener
         opener='gh run watch {3}'
