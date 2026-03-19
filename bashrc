@@ -40,6 +40,15 @@ else
     export EDITOR=vi
 fi
 
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    if [[ -n ${BASH_VERSION} ]]; then
+        source "$(code --locate-shell-integration-path bash)"
+    elif [[ -n ${ZSH_VERSION} ]]; then
+        source "$(code --locate-shell-integration-path zsh)"
+    fi
+fi
+
+
 export VISUAL="${EDITOR}"
 export GOPATH="${HOME}/go"
 
