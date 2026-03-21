@@ -15,9 +15,11 @@ source ~/.bashrc                                      # Import from bash
 export HISTFILE="$HOME/.zsh_history"                  # I get bugs when trying to change this
 export SAVEHIST=$HISTSIZE
 bindkey -e                                            # Emacs-mode
-PROMPT='%F{red}%M %F{blue}[%~]%f ${vcs_info_msg_0_}
+if [[ "$TERM_PROGRAM" != "vscode" ]]; then
+  PROMPT='%F{red}%M %F{blue}[%~]%f ${vcs_info_msg_0_}
 %# '
-RPROMPT='%D{%a %b %d %R W%V}'
+  RPROMPT='%D{%a %b %d %R W%V}'
+fi
 
 # Autocomplete
 zstyle ':completion:*' menu select                    # Menu-like autocomplete
@@ -27,6 +29,7 @@ bindkey -M menuselect '^[[Z' reverse-menu-complete    # Shift-Tab -> prev match
 # VCS
 setopt prompt_subst
 autoload -Uz vcs_info
+autoload -Uz add-zsh-hook
 zstyle ':vcs_info:*' stagedstr 'M'
 zstyle ':vcs_info:*' unstagedstr 'M'
 zstyle ':vcs_info:*' check-for-changes true
@@ -48,10 +51,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-extra
   fi
 }
 zstyle ':vcs_info:*' enable git
-precmd () {
-  vcs_info
-}
-
+add-zsh-hook precmd vcs_info
 
 ## See man zshoptions
 setopt HIST_IGNORE_DUPS    # Don't add duplicates to hist
