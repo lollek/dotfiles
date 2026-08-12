@@ -122,7 +122,7 @@ interactive_add() {
         {
             printf '[new branch]\n'
             remote_branches
-        } | fzf --print-query --prompt='branch or remote> ' --height=40% \
+        } | fzf --phony --print-query --prompt='branch or remote> ' --height=40% \
             --header='Type a new branch name, or select a remote branch'
     )" || return 1
 
@@ -147,7 +147,7 @@ choose_worktree() {
 }
 
 remove_worktree() {
-    local requested="${1:-}" target primary
+    local requested="${1:-}" target targets primary
     primary="$(primary_worktree)"
 
     if [[ -n "$requested" ]]; then
@@ -155,28 +155,34 @@ remove_worktree() {
             $1 == requested || $2 == requested || $1 ~ ("/" requested "$") { print $1; exit }
         ')"
         [[ -n "$target" ]] || target="$(choose_worktree "$requested")" || return 1
+        targets="$target"
     else
-        target="$(worktree_records | awk -F '\t' -v primary="$primary" '$1 != primary' | \
-            fzf --delimiter=$'\t' --with-nth=2,1 --prompt='remove worktree> ' --height=40% | cut -f1)" || return 1
+        require_fzf
+        targets="$(worktree_records | awk -F '\t' -v primary="$primary" '$1 != primary' | \
+            fzf --multi --delimiter=$'\t' --with-nth=2,1 --prompt='remove worktree> ' --height=40% | cut -f1)" || return 1
     fi
 
-    [[ "$target" != "$primary" ]] || die 'refusing to remove the primary worktree'
-    git worktree remove "$target"
+    while IFS= read -r target; do
+        [[ -n "$target" ]] || continue
+        [[ "$target" != "$primary" ]] || die 'refusing to remove the primary worktree'
+        git worktree remove "$target"
+    done <<< "$targets"
+
     rmdir "$(worktree_directory)" 2>/dev/null || true
 }
 
 usage() {
-    cat <<'EOF'
+        cat <<'EOF'
 usage: wt <command> [argument]
 
 commands:
-  add [branch]       Create a new branch. GIT_WORKTREE_PREFIX is prepended
-                        when set, unless branch already contains a slash.
-                     Without an argument, select a remote branch or type a new name.
-  add --remote       Select a remote branch and create a tracking worktree.
-  jump [query]       Print a selected worktree path for use with: cd "$(wt jump)"
-  list               List worktree paths and branches.
-  remove [worktree]  Remove a worktree; interactively selects one when omitted.
+    add [branch]       Create a new branch. GIT_WORKTREE_PREFIX is prepended
+                                         when set, unless branch already contains a slash.
+                                         Without an argument, select a remote branch or type a new name.
+    add --remote       Select a remote branch and create a tracking worktree.
+    jump [query]       Print a selected worktree path for use with: cd "$(wt jump)"
+    ls                 List worktree paths and branches.
+    rm [worktree]      Remove a worktree; use Tab to select several when omitted.
 EOF
 }
 
@@ -199,11 +205,11 @@ main() {
             repository_root >/dev/null
             choose_worktree "${1:-}"
             ;;
-        list)
+        ''|ls|list)
             repository_root >/dev/null
             worktree_records
             ;;
-        remove)
+        rm|remove)
             repository_root >/dev/null
             remove_worktree "${1:-}"
             ;;
