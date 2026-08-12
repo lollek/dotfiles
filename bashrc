@@ -262,6 +262,16 @@ if type kubectl &> /dev/null; then
     fi
 fi
 
+if [[ -d "/opt/homebrew/opt/nvm" ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+        . "/opt/homebrew/opt/nvm/nvm.sh" --no-use
+    fi
+    if [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]; then
+        . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    fi
+fi
+
 if type pyenv &> /dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
     [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
