@@ -1,0 +1,220 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+WORKTREE_DIRECTORY_SUFFIX='.worktrees'
+
+die() {
+    printf 'wt: %s\n' "$*" >&2
+    exit 1
+}
+
+require_fzf() {
+    command -v fzf >/dev/null || die 'fzf is required for interactive selection'
+}
+
+repository_root() {
+    git rev-parse --show-toplevel 2>/dev/null || die 'run this command from a Git repository or worktree'
+}
+
+primary_worktree() {
+    git worktree list --porcelain | sed -n 's/^worktree //p' | head -n 1
+}
+
+worktree_directory() {
+    local primary
+    primary="$(primary_worktree)"
+    printf '%s/%s%s\n' "$(dirname "$primary")" "$(basename "$primary")" "$WORKTREE_DIRECTORY_SUFFIX"
+}
+
+branch_directory_name() {
+    printf '%s\n' "${1//\//-}"
+}
+
+worktree_records() {
+    local line path='' branch='(detached)'
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        case "$line" in
+            'worktree '*)
+                path="${line#worktree }"
+                branch='(detached)'
+                ;;
+            'branch refs/heads/'*)
+                branch="${line#branch refs/heads/}"
+                ;;
+            '')
+                if [[ -n "$path" ]]; then
+                    printf '%s\t%s\n' "$path" "$branch"
+                    path=''
+                fi
+                ;;
+        esac
+    done < <(git worktree list --porcelain)
+
+    if [[ -n "$path" ]]; then
+        printf '%s\t%s\n' "$path" "$branch"
+    fi
+}
+
+remote_branches() {
+    git for-each-ref --format='%(refname:short)' refs/remotes |
+        grep -v '/HEAD$' || true
+}
+
+new_branch_name() {
+    local requested="$1" prefix
+
+    if [[ "$requested" == */* ]]; then
+        printf '%s\n' "$requested"
+    elif [[ -n "${GIT_WORKTREE_PREFIX:-}" ]]; then
+        prefix="${GIT_WORKTREE_PREFIX%/}"
+        printf '%s/%s\n' "$prefix" "$requested"
+    else
+        printf '%s\n' "$requested"
+    fi
+}
+
+target_path_for_branch() {
+    printf '%s/%s\n' "$(worktree_directory)" "$(branch_directory_name "$1")"
+}
+
+add_new_branch() {
+    local requested="$1" branch target
+    [[ -n "$requested" ]] || die 'a branch name is required'
+
+    branch="$(new_branch_name "$requested")"
+    target="$(target_path_for_branch "$branch")"
+    [[ ! -e "$target" ]] || die "worktree path already exists: $target"
+
+    mkdir -p "$(dirname "$target")"
+    if git show-ref --verify --quiet "refs/heads/$branch"; then
+        git worktree add "$target" "$branch"
+    else
+        git worktree add -b "$branch" "$target"
+    fi
+}
+
+add_remote_branch() {
+    local remote_ref="$1" branch target
+    branch="${remote_ref#*/}"
+    target="$(target_path_for_branch "$branch")"
+    [[ ! -e "$target" ]] || die "worktree path already exists: $target"
+
+    mkdir -p "$(dirname "$target")"
+    if git show-ref --verify --quiet "refs/heads/$branch"; then
+        git worktree add "$target" "$branch"
+    else
+        git worktree add --track -b "$branch" "$target" "$remote_ref"
+    fi
+}
+
+choose_remote_branch() {
+    require_fzf
+    remote_branches | fzf --prompt='remote branch> ' --height=40%
+}
+
+interactive_add() {
+    local output query selected
+    require_fzf
+
+    output="$(
+        {
+            printf '[new branch]\n'
+            remote_branches
+        } | fzf --print-query --prompt='branch or remote> ' --height=40% \
+            --header='Type a new branch name, or select a remote branch'
+    )" || return 1
+
+    query="${output%%$'\n'*}"
+    selected=''
+    if [[ "$output" == *$'\n'* ]]; then
+        selected="${output#*$'\n'}"
+    fi
+
+    if [[ "$selected" == '[new branch]' || -z "$selected" ]]; then
+        add_new_branch "$query"
+    else
+        add_remote_branch "$selected"
+    fi
+}
+
+choose_worktree() {
+    local query="${1:-}"
+    require_fzf
+    worktree_records | fzf --delimiter=$'\t' --with-nth=2,1 --prompt='worktree> ' \
+        --query "$query" --height=40% | cut -f1
+}
+
+remove_worktree() {
+    local requested="${1:-}" target primary
+    primary="$(primary_worktree)"
+
+    if [[ -n "$requested" ]]; then
+        target="$(worktree_records | awk -F '\t' -v requested="$requested" '
+            $1 == requested || $2 == requested || $1 ~ ("/" requested "$") { print $1; exit }
+        ')"
+        [[ -n "$target" ]] || target="$(choose_worktree "$requested")" || return 1
+    else
+        target="$(worktree_records | awk -F '\t' -v primary="$primary" '$1 != primary' | \
+            fzf --delimiter=$'\t' --with-nth=2,1 --prompt='remove worktree> ' --height=40% | cut -f1)" || return 1
+    fi
+
+    [[ "$target" != "$primary" ]] || die 'refusing to remove the primary worktree'
+    git worktree remove "$target"
+    rmdir "$(worktree_directory)" 2>/dev/null || true
+}
+
+usage() {
+    cat <<'EOF'
+usage: wt <command> [argument]
+
+commands:
+  add [branch]       Create a new branch. GIT_WORKTREE_PREFIX is prepended
+                        when set, unless branch already contains a slash.
+                     Without an argument, select a remote branch or type a new name.
+  add --remote       Select a remote branch and create a tracking worktree.
+  jump [query]       Print a selected worktree path for use with: cd "$(wt jump)"
+  list               List worktree paths and branches.
+  remove [worktree]  Remove a worktree; interactively selects one when omitted.
+EOF
+}
+
+main() {
+    local command="${1:-}"
+    shift || true
+
+    case "$command" in
+        add)
+            repository_root >/dev/null
+            if [[ "${1:-}" == '--remote' ]]; then
+                add_remote_branch "$(choose_remote_branch)"
+            elif [[ -n "${1:-}" ]]; then
+                add_new_branch "$1"
+            else
+                interactive_add
+            fi
+            ;;
+        jump)
+            repository_root >/dev/null
+            choose_worktree "${1:-}"
+            ;;
+        list)
+            repository_root >/dev/null
+            worktree_records
+            ;;
+        remove)
+            repository_root >/dev/null
+            remove_worktree "${1:-}"
+            ;;
+        -h|--help|help)
+            usage
+            ;;
+        *)
+            usage >&2
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
