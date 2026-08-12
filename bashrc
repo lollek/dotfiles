@@ -262,18 +262,28 @@ if type kubectl &> /dev/null; then
     fi
 fi
 
+if [[ -d "/opt/homebrew/opt/nvm" ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+        . "/opt/homebrew/opt/nvm/nvm.sh" --no-use
+    fi
+    if [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]; then
+        . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+    fi
+fi
+
 if type pyenv &> /dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
     [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
     if [[ -n ${BASH_VERSION} ]]; then
-        eval "$(pyenv init - bash)"
+        eval "$(pyenv init - bash --no-rehash)"
     elif [[ -n ${ZSH_VERSION} ]]; then
-        eval "$(pyenv init - zsh)"
+        eval "$(pyenv init - zsh --no-rehash)"
     fi
 fi
 
 if type rbenv &> /dev/null; then
-    eval "$(rbenv init -)"
+    eval "$(rbenv init - --no-rehash)"
 fi
 
 if type rg &> /dev/null; then
