@@ -276,14 +276,14 @@ if type pyenv &> /dev/null; then
     export PYENV_ROOT="$HOME/.pyenv"
     [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
     if [[ -n ${BASH_VERSION} ]]; then
-        eval "$(pyenv init - bash)"
+        eval "$(pyenv init - bash --no-rehash)"
     elif [[ -n ${ZSH_VERSION} ]]; then
-        eval "$(pyenv init - zsh)"
+        eval "$(pyenv init - zsh --no-rehash)"
     fi
 fi
 
 if type rbenv &> /dev/null; then
-    eval "$(rbenv init -)"
+    eval "$(rbenv init - --no-rehash)"
 fi
 
 if type rg &> /dev/null; then
