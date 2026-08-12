@@ -28,6 +28,7 @@ export HISTFILE="${HOME}/.histfile"
 export HISTSIZE='50000'
 export PAGER='less'
 export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
+export WORKTREE_DIRECTORY_SUFFIX='olleai'
 if type tty &> /dev/null; then
     export GPG_TTY=$(tty)
 fi
@@ -49,7 +50,6 @@ if [[ "$TERM_PROGRAM" == "vscode" ]]; then
         fi
     fi
 fi
-
 
 export VISUAL="${EDITOR}"
 export GOPATH="${HOME}/go"
@@ -272,10 +272,14 @@ if type pyenv &> /dev/null; then
     fi
 fi
 
+if type rbenv &> /dev/null; then
+    eval "$(rbenv init -)"
+fi
+
 if type rg &> /dev/null; then
     alias rgz=rg.fzf
 fi
 
 maybe_source "$HOME/dotfiles/scripts/z.sh"
 maybe_source "$HOME/dotfiles/bashrc.local"
-
+maybe_source "$HOME/.rover/env"
