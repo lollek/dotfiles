@@ -57,6 +57,10 @@ worktree_records() {
     fi
 }
 
+worktree_branches() {
+    worktree_records | cut -f2
+}
+
 remote_branches() {
     git for-each-ref --format='%(refname:short)' refs/remotes |
         grep -v '/HEAD$' || true
@@ -142,7 +146,7 @@ interactive_add() {
 choose_worktree() {
     local query="${1:-}"
     require_fzf
-    worktree_records | fzf --delimiter=$'\t' --with-nth=2,1 --prompt='worktree> ' \
+    worktree_records | fzf --delimiter=$'\t' --with-nth=2 --prompt='worktree> ' \
         --query "$query" --height=40% | cut -f1
 }
 
@@ -159,7 +163,7 @@ remove_worktree() {
     else
         require_fzf
         targets="$(worktree_records | awk -F '\t' -v primary="$primary" '$1 != primary' | \
-            fzf --multi --delimiter=$'\t' --with-nth=2,1 --prompt='remove worktree> ' --height=40% | cut -f1)" || return 1
+            fzf --multi --delimiter=$'\t' --with-nth=2 --prompt='remove worktree> ' --height=40% | cut -f1)" || return 1
     fi
 
     while IFS= read -r target; do
@@ -207,7 +211,7 @@ main() {
             ;;
         ''|ls|list)
             repository_root >/dev/null
-            worktree_records
+            worktree_branches
             ;;
         rm|remove)
             repository_root >/dev/null
