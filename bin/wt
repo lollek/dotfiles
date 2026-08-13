@@ -206,14 +206,15 @@ EOF
 }
 
 main() {
-    local command="${1:-}"
+    local command="${1:-}" remote_branch
     shift || true
 
     case "$command" in
         add)
             repository_root >/dev/null
             if [[ "${1:-}" == '--remote' ]]; then
-                add_remote_branch "$(choose_remote_branch)"
+                remote_branch="$(choose_remote_branch)" || return
+                add_remote_branch "$remote_branch"
             elif [[ -n "${1:-}" ]]; then
                 add_new_branch "$1"
             else

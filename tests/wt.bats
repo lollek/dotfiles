@@ -61,3 +61,23 @@ teardown() {
 
     rm -rf "$newline_root" "$newline_worktrees"
 }
+
+@test "add --remote exits cleanly when remote selection is cancelled" {
+    local bin_directory
+
+    bin_directory="$test_root/bin"
+    mkdir "$bin_directory"
+    printf '#!/usr/bin/env bash\nexit 130\n' > "$bin_directory/fzf"
+    chmod +x "$bin_directory/fzf"
+
+    run env PATH="$bin_directory:$PATH" "$wt" add --remote
+
+    [ "$status" -eq 130 ]
+    [ -z "$output" ]
+
+    run git worktree list --porcelain
+
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"worktree $worktree_directory/a"* ]]
+    [[ "$output" == *"worktree $worktree_directory/b"* ]]
+}
