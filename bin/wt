@@ -18,7 +18,18 @@ repository_root() {
 }
 
 primary_worktree() {
-    git worktree list --porcelain | sed -n 's/^worktree //p' | head -n 1
+    local record
+
+    while IFS= read -r -d '' record; do
+        case "$record" in
+            'worktree '*)
+                printf '%s\n' "${record#worktree }"
+                return
+                ;;
+        esac
+    done < <(git worktree list --porcelain -z)
+
+    die 'could not determine the primary worktree'
 }
 
 worktree_directory() {
@@ -32,33 +43,59 @@ branch_directory_name() {
 }
 
 worktree_records() {
-    local line path='' branch='(detached)'
+    local record path='' branch='(detached)'
 
-    while IFS= read -r line || [[ -n "$line" ]]; do
-        case "$line" in
+    while IFS= read -r -d '' record; do
+        case "$record" in
             'worktree '*)
-                path="${line#worktree }"
+                path="${record#worktree }"
                 branch='(detached)'
                 ;;
             'branch refs/heads/'*)
-                branch="${line#branch refs/heads/}"
+                branch="${record#branch refs/heads/}"
                 ;;
             '')
                 if [[ -n "$path" ]]; then
-                    printf '%s\t%s\n' "$path" "$branch"
+                    printf '%s\0%s\0' "$path" "$branch"
                     path=''
                 fi
                 ;;
         esac
-    done < <(git worktree list --porcelain)
+    done < <(git worktree list --porcelain -z)
 
     if [[ -n "$path" ]]; then
-        printf '%s\t%s\n' "$path" "$branch"
+        printf '%s\0%s\0' "$path" "$branch"
     fi
 }
 
 worktree_branches() {
-    worktree_records | cut -f2
+    local path branch
+
+    while IFS= read -r -d '' path && IFS= read -r -d '' branch; do
+        printf '%s\n' "$branch"
+    done < <(worktree_records)
+}
+
+worktree_choices() {
+    local excluded_path="${1:-}" path branch
+
+    while IFS= read -r -d '' path && IFS= read -r -d '' branch; do
+        [[ "$path" != "$excluded_path" ]] || continue
+        printf '%s\t%s\0' "$branch" "$path"
+    done < <(worktree_records)
+}
+
+worktree_branch() {
+    local requested="$1" path branch
+
+    while IFS= read -r -d '' path && IFS= read -r -d '' branch; do
+        if [[ "$path" == "$requested" ]]; then
+            printf '%s\n' "$branch"
+            return
+        fi
+    done < <(worktree_records)
+
+    return 1
 }
 
 remote_branches() {
@@ -100,15 +137,17 @@ add_new_branch() {
 }
 
 add_remote_branch() {
-    local remote_ref="$1" branch target
+    local remote_ref="$1" branch target upstream
     branch="${remote_ref#*/}"
     target="$(target_path_for_branch "$branch")"
     [[ ! -e "$target" ]] || die "worktree path already exists: $target"
 
-    mkdir -p "$(dirname "$target")"
     if git show-ref --verify --quiet "refs/heads/$branch"; then
+        upstream="$(git for-each-ref --format='%(upstream:short)' "refs/heads/$branch")"
+        [[ "$upstream" == "$remote_ref" ]] || die "local branch '$branch' tracks '${upstream:-no remote}', not '$remote_ref'"
         git worktree add "$target" "$branch"
     else
+        mkdir -p "$(dirname "$target")"
         git worktree add --track -b "$branch" "$target" "$remote_ref"
     fi
 }
@@ -144,33 +183,47 @@ interactive_add() {
 }
 
 choose_worktree() {
-    local query="${1:-}"
+    local query="${1:-}" choice
     require_fzf
-    worktree_records | fzf --delimiter=$'\t' --with-nth=2 --prompt='worktree> ' \
-        --query "$query" --select-1 --height=40% | cut -f1
+    IFS= read -r -d '' choice < <(
+        worktree_choices | fzf --read0 --print0 --delimiter=$'\t' --with-nth=1 --prompt='worktree> ' \
+            --query "$query" --select-1 --height=40%
+    ) || return 1
+    printf '%s\n' "${choice#*$'\t'}"
+}
+
+remove_worktree_at() {
+    local target="$1" primary="$2" branch
+
+    [[ "$target" != "$primary" ]] || die 'refusing to remove the primary worktree'
+    branch="$(worktree_branch "$target")" || die "no worktree found at: $target"
+    git worktree remove "$target"
+    if [[ "$branch" != '(detached)' ]]; then
+        git branch -d -- "$branch"
+    fi
 }
 
 remove_worktree() {
-    local requested="${1:-}" target targets primary
+    local requested="${1:-}" primary path branch found=0
     primary="$(primary_worktree)"
 
     if [[ -n "$requested" ]]; then
-        target="$(worktree_records | awk -F '\t' -v requested="$requested" '
-            $1 == requested || $2 == requested || $1 ~ ("/" requested "$") { print $1; exit }
-        ')"
-        [[ -n "$target" ]] || target="$(choose_worktree "$requested")" || return 1
-        targets="$target"
+        while IFS= read -r -d '' path && IFS= read -r -d '' branch; do
+            if [[ "$path" == "$requested" || "$branch" == "$requested" ]]; then
+                remove_worktree_at "$path" "$primary"
+                found=1
+                break
+            fi
+        done < <(worktree_records)
+        (( found )) || die "no worktree found for: $requested"
     else
         require_fzf
-        targets="$(worktree_records | awk -F '\t' -v primary="$primary" '$1 != primary' | \
-            fzf --multi --delimiter=$'\t' --with-nth=2 --prompt='remove worktree> ' --height=40% | cut -f1)" || return 1
+        worktree_choices "$primary" | fzf --multi --read0 --print0 --delimiter=$'\t' --with-nth=1 \
+            --prompt='remove worktree> ' --height=40% |
+            while IFS= read -r -d '' path; do
+                remove_worktree_at "${path#*$'\t'}" "$primary"
+            done || return 1
     fi
-
-    while IFS= read -r target; do
-        [[ -n "$target" ]] || continue
-        [[ "$target" != "$primary" ]] || die 'refusing to remove the primary worktree'
-        git worktree remove "$target"
-    done <<< "$targets"
 
     rmdir "$(worktree_directory)" 2>/dev/null || true
 }
@@ -185,20 +238,22 @@ commands:
                                          Without an argument, select a remote branch or type a new name.
     add --remote       Select a remote branch and create a tracking worktree.
     jump [query]       Print a selected worktree path for use with: cd "$(wt jump)"
-    ls                 List worktree paths and branches.
-    rm [worktree]      Remove a worktree; use Tab to select several when omitted.
+    ls                 List worktree branches.
+    rm [worktree]      Remove a worktree and its local branch; use Tab to select several when omitted.
 EOF
 }
 
 main() {
-    local command="${1:-}"
+    local command="${1:-}" remote_branch
     shift || true
 
     case "$command" in
         add)
+            [[ $# -le 1 ]] || die 'add accepts at most one argument'
             repository_root >/dev/null
             if [[ "${1:-}" == '--remote' ]]; then
-                add_remote_branch "$(choose_remote_branch)"
+                remote_branch="$(choose_remote_branch)" || return
+                add_remote_branch "$remote_branch"
             elif [[ -n "${1:-}" ]]; then
                 add_new_branch "$1"
             else
@@ -206,18 +261,22 @@ main() {
             fi
             ;;
         jump)
+            [[ $# -le 1 ]] || die 'jump accepts at most one argument'
             repository_root >/dev/null
             choose_worktree "${1:-}"
             ;;
         ''|ls|list)
+            [[ $# -eq 0 ]] || die 'ls does not accept arguments'
             repository_root >/dev/null
             worktree_branches
             ;;
         rm|remove)
+            [[ $# -le 1 ]] || die 'rm accepts at most one argument'
             repository_root >/dev/null
             remove_worktree "${1:-}"
             ;;
         -h|--help|help)
+            [[ $# -eq 0 ]] || die 'help does not accept arguments'
             usage
             ;;
         *)
