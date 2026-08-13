@@ -18,7 +18,18 @@ repository_root() {
 }
 
 primary_worktree() {
-    git worktree list --porcelain | sed -n 's/^worktree //p' | head -n 1
+    local record
+
+    while IFS= read -r -d '' record; do
+        case "$record" in
+            'worktree '*)
+                printf '%s\n' "${record#worktree }"
+                return
+                ;;
+        esac
+    done < <(git worktree list --porcelain -z)
+
+    die 'could not determine the primary worktree'
 }
 
 worktree_directory() {
@@ -32,16 +43,16 @@ branch_directory_name() {
 }
 
 worktree_records() {
-    local line path='' branch='(detached)'
+    local record path='' branch='(detached)'
 
-    while IFS= read -r line || [[ -n "$line" ]]; do
-        case "$line" in
+    while IFS= read -r -d '' record; do
+        case "$record" in
             'worktree '*)
-                path="${line#worktree }"
+                path="${record#worktree }"
                 branch='(detached)'
                 ;;
             'branch refs/heads/'*)
-                branch="${line#branch refs/heads/}"
+                branch="${record#branch refs/heads/}"
                 ;;
             '')
                 if [[ -n "$path" ]]; then
@@ -50,7 +61,7 @@ worktree_records() {
                 fi
                 ;;
         esac
-    done < <(git worktree list --porcelain)
+    done < <(git worktree list --porcelain -z)
 
     if [[ -n "$path" ]]; then
         printf '%s\t%s\n' "$path" "$branch"

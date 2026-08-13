@@ -38,3 +38,26 @@ teardown() {
     [[ "$output" == *"worktree $worktree_directory/a"* ]]
     [[ "$output" == *"worktree $worktree_directory/b"* ]]
 }
+
+@test "add supports a primary worktree path containing a newline" {
+    local newline_root newline_repository newline_worktrees
+
+    newline_root="$(mktemp -d)"
+    newline_root="$(cd "$newline_root" && pwd -P)"
+    newline_repository="$newline_root/repository"$'\n'"name"
+    newline_worktrees="$newline_root/repository"$'\n'"name.worktrees"
+
+    git init -q "$newline_repository"
+    git -C "$newline_repository" config user.email test@example.com
+    git -C "$newline_repository" config user.name Test
+    printf 'initial\n' > "$newline_repository/file"
+    git -C "$newline_repository" add file
+    git -C "$newline_repository" commit -qm initial
+
+    run env -u GIT_WORKTREE_PREFIX bash -c 'cd "$1" && "$2" add topic' -- "$newline_repository" "$wt"
+
+    [ "$status" -eq 0 ]
+    [ -d "$newline_worktrees/topic" ]
+
+    rm -rf "$newline_root" "$newline_worktrees"
+}
