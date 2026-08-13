@@ -220,7 +220,7 @@ if type fzf &> /dev/null; then
         directory=$(
             _z -l "$@" 2>&1 |
                 awk '/^[[:space:]]*-?[0-9]/ { sub(/^[[:space:]]*[^[:space:]]+[[:space:]]*/, ""); print }' |
-                fzf
+                fzf --tac
         ) || return
         [ -n "$directory" ] && cd -- "$directory"
     }
