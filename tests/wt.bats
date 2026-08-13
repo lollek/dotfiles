@@ -40,7 +40,7 @@ teardown() {
 }
 
 @test "add supports a primary worktree path containing a newline" {
-    local newline_root newline_repository newline_worktrees
+    local newline_root newline_repository newline_worktrees bin_directory
 
     newline_root="$(mktemp -d)"
     newline_root="$(cd "$newline_root" && pwd -P)"
@@ -58,6 +58,21 @@ teardown() {
 
     [ "$status" -eq 0 ]
     [ -d "$newline_worktrees/topic" ]
+
+    bin_directory="$newline_root/bin"
+    mkdir "$bin_directory"
+    printf '#!/usr/bin/env bash\nIFS= read -r -d "" choice\nprintf "%%s\\0" "$choice"\n' > "$bin_directory/fzf"
+    chmod +x "$bin_directory/fzf"
+
+    run env PATH="$bin_directory:$PATH" bash -c 'cd "$1" && "$2" jump' -- "$newline_repository" "$wt"
+
+    [ "$status" -eq 0 ]
+    [ "$output" = "$newline_repository" ]
+
+    run env -u GIT_WORKTREE_PREFIX bash -c 'cd "$1" && "$2" rm topic' -- "$newline_repository" "$wt"
+
+    [ "$status" -eq 0 ]
+    [ ! -e "$newline_worktrees/topic" ]
 
     rm -rf "$newline_root" "$newline_worktrees"
 }
