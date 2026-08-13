@@ -47,3 +47,11 @@
 	email = olle+git@iix.se
 	name = Olle Aid Kvarnström
 	signingkey = EB1DA6F04FA5514C
+[credential "https://github.com"]
+	helper = 
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !gh auth git-credential
+[include]
+    path = ~/.gitconfig-override
