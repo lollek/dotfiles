@@ -10,7 +10,6 @@
 [commit]
 	gpgsign = true
 	verbose = true
-	template = /Users/olleai/.gitmessage
 [core]
 	editor = vim
 	excludesfile = ~/.gitignore_global
@@ -45,12 +44,6 @@
 [tag]
 	sort = taggerdate
 [user]
-	email = olleai@axis.com
+	email = olle+git@iix.se
 	name = Olle Aid Kvarnström
-	signingkey = B2E20318
-[credential "https://github.com"]
-	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
-[credential "https://gist.github.com"]
-	helper = 
-	helper = !/opt/homebrew/bin/gh auth git-credential
+	signingkey = EB1DA6F04FA5514C
