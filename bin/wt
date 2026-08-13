@@ -151,7 +151,7 @@ choose_worktree() {
 }
 
 remove_worktree() {
-    local requested="${1:-}" target targets primary
+    local requested="${1:-}" target targets primary branch
     primary="$(primary_worktree)"
 
     if [[ -n "$requested" ]]; then
@@ -169,7 +169,11 @@ remove_worktree() {
     while IFS= read -r target; do
         [[ -n "$target" ]] || continue
         [[ "$target" != "$primary" ]] || die 'refusing to remove the primary worktree'
+        branch="$(worktree_records | awk -F '\t' -v target="$target" '$1 == target { print $2; exit }')"
         git worktree remove "$target"
+        if [[ -n "$branch" && "$branch" != '(detached)' ]]; then
+            git branch -d -- "$branch"
+        fi
     done <<< "$targets"
 
     rmdir "$(worktree_directory)" 2>/dev/null || true
@@ -186,7 +190,7 @@ commands:
     add --remote       Select a remote branch and create a tracking worktree.
     jump [query]       Print a selected worktree path for use with: cd "$(wt jump)"
     ls                 List worktree paths and branches.
-    rm [worktree]      Remove a worktree; use Tab to select several when omitted.
+    rm [worktree]      Remove a worktree and its local branch; use Tab to select several when omitted.
 EOF
 }
 
