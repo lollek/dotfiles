@@ -181,6 +181,20 @@ unset o_init_stty_settings
 ## Special application settings ##
 ##################################
 
+if type aws &> /dev/null; then
+    if type fzf &> /dev/null; then
+        aws-loginz() {
+            local profile
+            profile=$(aws configure list-profiles | fzf \
+            --query "$1" \
+            --height 10 \
+            --select-1) || return
+            aws sso login --profile "$profile"
+            export AWS_PROFILE="$profile"
+        }
+    fi
+fi
+
 if type clang &> /dev/null; then
     alias clang='clang -Weverything -Werror'
     alias clang++='clang++ -Weverything -Werror'
@@ -201,6 +215,15 @@ if type fzf &> /dev/null; then
     elif [[ -n ${ZSH_VERSION} ]]; then
         source <(fzf --zsh)
     fi
+    zz() {
+        local directory
+        directory=$(
+            _z -l "$@" 2>&1 |
+                awk '/^[[:space:]]*-?[0-9]/ { sub(/^[[:space:]]*[^[:space:]]+[[:space:]]*/, ""); print }' |
+                fzf --tac
+        ) || return
+        [ -n "$directory" ] && cd -- "$directory"
+    }
 fi
 
 if type g++ &> /dev/null; then
@@ -290,6 +313,7 @@ if type rg &> /dev/null; then
     alias rgz=rg.fzf
 fi
 
+maybe_source "$HOME/.rover/env"
+maybe_source "$HOME/.cargo/env"
 maybe_source "$HOME/dotfiles/scripts/z.sh"
 maybe_source "$HOME/dotfiles/bashrc.local"
-maybe_source "$HOME/.rover/env"

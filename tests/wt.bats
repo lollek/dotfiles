@@ -7,7 +7,7 @@ setup() {
     worktree_directory="$test_root/repository.worktrees"
     wt="$BATS_TEST_DIRNAME/../bin/wt"
 
-    git init -q "$repository"
+    git init -q -b main "$repository"
     git -C "$repository" config user.email test@example.com
     git -C "$repository" config user.name Test
     printf 'initial\n' > "$repository/file"
@@ -24,6 +24,14 @@ setup() {
 
 teardown() {
     rm -rf "$test_root" "$worktree_directory"
+}
+
+base_selector() {
+    local bin_directory="$1"
+
+    mkdir "$bin_directory"
+    printf '#!/usr/bin/env bash\ncat > "$FZF_INPUT"\nprintf "%%s\\t%%s\\n" "$FZF_SELECTION" "$FZF_SELECTION"\n' > "$bin_directory/fzf"
+    chmod +x "$bin_directory/fzf"
 }
 
 @test "rm treats a supplied worktree name literally" {
@@ -54,13 +62,14 @@ teardown() {
     git -C "$newline_repository" add file
     git -C "$newline_repository" commit -qm initial
 
-    run env -u GIT_WORKTREE_PREFIX bash -c 'cd "$1" && "$2" add topic' -- "$newline_repository" "$wt"
+    bin_directory="$newline_root/bin"
+    base_selector "$bin_directory"
+
+    run env -u GIT_WORKTREE_PREFIX PATH="$bin_directory:$PATH" FZF_INPUT="$newline_root/fzf-input" FZF_SELECTION=HEAD bash -c 'cd "$1" && "$2" add topic' -- "$newline_repository" "$wt"
 
     [ "$status" -eq 0 ]
     [ -d "$newline_worktrees/topic" ]
 
-    bin_directory="$newline_root/bin"
-    mkdir "$bin_directory"
     printf '#!/usr/bin/env bash\nIFS= read -r -d "" choice\nprintf "%%s\\0" "$choice"\n' > "$bin_directory/fzf"
     chmod +x "$bin_directory/fzf"
 
@@ -75,6 +84,45 @@ teardown() {
     [ ! -e "$newline_worktrees/topic" ]
 
     rm -rf "$newline_root" "$newline_worktrees"
+}
+
+@test "add creates a branch from the selected base" {
+    local bin_directory base_commit
+
+    git checkout -qb current
+    printf 'current\n' >> file
+    git commit -am current -q
+    git update-ref refs/remotes/origin/main main
+    git update-ref refs/remotes/upstream/master main
+    base_commit="$(git rev-parse main)"
+
+    bin_directory="$test_root/bin"
+    base_selector "$bin_directory"
+
+    run env -u GIT_WORKTREE_PREFIX PATH="$bin_directory:$PATH" FZF_INPUT="$test_root/fzf-input" FZF_SELECTION=origin/main "$wt" add topic
+
+    [ "$status" -eq 0 ]
+    [ "$(git -C "$worktree_directory/topic" rev-parse HEAD)" = "$base_commit" ]
+    [ "$(git -C "$worktree_directory/topic" rev-parse --abbrev-ref HEAD)" = topic ]
+    grep -Fx 'origin/main	origin/main' "$test_root/fzf-input"
+    grep -Fx 'upstream/master	upstream/master' "$test_root/fzf-input"
+    grep -Fx 'main	main' "$test_root/fzf-input"
+    grep -Fx 'current: current	HEAD' "$test_root/fzf-input"
+}
+
+@test "add exits cleanly when base selection is cancelled" {
+    local bin_directory
+
+    bin_directory="$test_root/bin"
+    mkdir "$bin_directory"
+    printf '#!/usr/bin/env bash\nexit 130\n' > "$bin_directory/fzf"
+    chmod +x "$bin_directory/fzf"
+
+    run env -u GIT_WORKTREE_PREFIX PATH="$bin_directory:$PATH" "$wt" add topic
+
+    [ "$status" -eq 130 ]
+    [ ! -e "$worktree_directory/topic" ]
+    ! git show-ref --verify --quiet refs/heads/topic
 }
 
 @test "add --remote exits cleanly when remote selection is cancelled" {
