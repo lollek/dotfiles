@@ -156,9 +156,9 @@ remove_worktree() {
 
     if [[ -n "$requested" ]]; then
         target="$(worktree_records | awk -F '\t' -v requested="$requested" '
-            $1 == requested || $2 == requested || $1 ~ ("/" requested "$") { print $1; exit }
+            $1 == requested || $2 == requested { print $1; exit }
         ')"
-        [[ -n "$target" ]] || target="$(choose_worktree "$requested")" || return 1
+        [[ -n "$target" ]] || die "no worktree found for: $requested"
         targets="$target"
     else
         require_fzf
