@@ -111,15 +111,17 @@ add_new_branch() {
 }
 
 add_remote_branch() {
-    local remote_ref="$1" branch target
+    local remote_ref="$1" branch target upstream
     branch="${remote_ref#*/}"
     target="$(target_path_for_branch "$branch")"
     [[ ! -e "$target" ]] || die "worktree path already exists: $target"
 
-    mkdir -p "$(dirname "$target")"
     if git show-ref --verify --quiet "refs/heads/$branch"; then
+        upstream="$(git for-each-ref --format='%(upstream:short)' "refs/heads/$branch")"
+        [[ "$upstream" == "$remote_ref" ]] || die "local branch '$branch' tracks '${upstream:-no remote}', not '$remote_ref'"
         git worktree add "$target" "$branch"
     else
+        mkdir -p "$(dirname "$target")"
         git worktree add --track -b "$branch" "$target" "$remote_ref"
     fi
 }

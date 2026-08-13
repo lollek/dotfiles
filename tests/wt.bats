@@ -81,3 +81,25 @@ teardown() {
     [[ "$output" == *"worktree $worktree_directory/a"* ]]
     [[ "$output" == *"worktree $worktree_directory/b"* ]]
 }
+
+@test "add --remote refuses a local branch tracking a different remote" {
+    local bin_directory
+
+    git branch feature
+    git remote add origin https://example.invalid/origin.git
+    git remote add upstream https://example.invalid/upstream.git
+    git update-ref refs/remotes/origin/feature HEAD
+    git config branch.feature.remote upstream
+    git config branch.feature.merge refs/heads/feature
+
+    bin_directory="$test_root/bin"
+    mkdir "$bin_directory"
+    printf '#!/usr/bin/env bash\nprintf "origin/feature\\n"\n' > "$bin_directory/fzf"
+    chmod +x "$bin_directory/fzf"
+
+    run env PATH="$bin_directory:$PATH" "$wt" add --remote
+
+    [ "$status" -eq 1 ]
+    [ "$output" = "wt: local branch 'feature' tracks 'upstream/feature', not 'origin/feature'" ]
+    [ ! -e "$worktree_directory/feature" ]
+}
