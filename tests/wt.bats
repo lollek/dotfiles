@@ -103,3 +103,21 @@ teardown() {
     [ "$output" = "wt: local branch 'feature' tracks 'upstream/feature', not 'origin/feature'" ]
     [ ! -e "$worktree_directory/feature" ]
 }
+
+@test "commands reject unexpected trailing arguments" {
+    run "$wt" add feature extra
+
+    [ "$status" -eq 1 ]
+    [ "$output" = 'wt: add accepts at most one argument' ]
+
+    run "$wt" ls extra
+
+    [ "$status" -eq 1 ]
+    [ "$output" = 'wt: ls does not accept arguments' ]
+
+    run "$wt" rm a extra
+
+    [ "$status" -eq 1 ]
+    [ "$output" = 'wt: rm accepts at most one argument' ]
+    [ -d "$worktree_directory/a" ]
+}

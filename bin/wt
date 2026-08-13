@@ -213,6 +213,7 @@ main() {
 
     case "$command" in
         add)
+            [[ $# -le 1 ]] || die 'add accepts at most one argument'
             repository_root >/dev/null
             if [[ "${1:-}" == '--remote' ]]; then
                 remote_branch="$(choose_remote_branch)" || return
@@ -224,18 +225,22 @@ main() {
             fi
             ;;
         jump)
+            [[ $# -le 1 ]] || die 'jump accepts at most one argument'
             repository_root >/dev/null
             choose_worktree "${1:-}"
             ;;
         ''|ls|list)
+            [[ $# -eq 0 ]] || die 'ls does not accept arguments'
             repository_root >/dev/null
             worktree_branches
             ;;
         rm|remove)
+            [[ $# -le 1 ]] || die 'rm accepts at most one argument'
             repository_root >/dev/null
             remove_worktree "${1:-}"
             ;;
         -h|--help|help)
+            [[ $# -eq 0 ]] || die 'help does not accept arguments'
             usage
             ;;
         *)
