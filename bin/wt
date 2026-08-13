@@ -103,6 +103,25 @@ remote_branches() {
         grep -v '/HEAD$' || true
 }
 
+base_branch_choices() {
+    local ref current
+
+    while IFS= read -r ref; do
+        printf '%s\t%s\n' "$ref" "$ref"
+    done < <(git for-each-ref --format='%(refname:short)' refs/remotes refs/heads | grep -E '(^|/)(main|master)$' || true)
+
+    current="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD)"
+    printf 'current: %s\tHEAD\n' "$current"
+}
+
+choose_base_branch() {
+    local choice
+    require_fzf
+
+    choice="$(base_branch_choices | fzf --delimiter=$'\t' --with-nth=1 --prompt='base branch> ' --height=40%)" || return
+    printf '%s\n' "${choice#*$'\t'}"
+}
+
 new_branch_name() {
     local requested="$1" prefix
 
@@ -121,7 +140,7 @@ target_path_for_branch() {
 }
 
 add_new_branch() {
-    local requested="$1" branch target
+    local requested="$1" branch target base
     [[ -n "$requested" ]] || die 'a branch name is required'
 
     branch="$(new_branch_name "$requested")"
@@ -132,7 +151,8 @@ add_new_branch() {
     if git show-ref --verify --quiet "refs/heads/$branch"; then
         git worktree add "$target" "$branch"
     else
-        git worktree add -b "$branch" "$target"
+        base="$(choose_base_branch)" || return
+        git worktree add -b "$branch" "$target" "$base"
     fi
 }
 
@@ -233,7 +253,7 @@ usage() {
 usage: wt <command> [argument]
 
 commands:
-    add [branch]       Create a new branch. GIT_WORKTREE_PREFIX is prepended
+    add [branch]       Create a new branch after selecting its base. GIT_WORKTREE_PREFIX is prepended
                                          when set, unless branch already contains a slash.
                                          Without an argument, select a remote branch or type a new name.
     add --remote       Select a remote branch and create a tracking worktree.
