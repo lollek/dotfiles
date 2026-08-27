@@ -110,6 +110,21 @@ base_selector() {
     grep -Fx 'current: current	HEAD' "$test_root/fzf-input"
 }
 
+@test "add can select a branch from another worktree as its base" {
+    local bin_directory base_commit
+
+    base_commit="$(git -C "$worktree_directory/a" rev-parse HEAD)"
+    bin_directory="$test_root/bin"
+    base_selector "$bin_directory"
+
+    run env -u GIT_WORKTREE_PREFIX PATH="$bin_directory:$PATH" FZF_INPUT="$test_root/fzf-input" FZF_SELECTION=a "$wt" add topic
+
+    [ "$status" -eq 0 ]
+    [ "$(git -C "$worktree_directory/topic" rev-parse HEAD)" = "$base_commit" ]
+    grep -Fqx $'a\ta' "$test_root/fzf-input"
+    grep -Fqx $'b\tb' "$test_root/fzf-input"
+}
+
 @test "add exits cleanly when base selection is cancelled" {
     local bin_directory
 

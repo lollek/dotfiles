@@ -108,7 +108,7 @@ base_branch_choices() {
 
     while IFS= read -r ref; do
         printf '%s\t%s\n' "$ref" "$ref"
-    done < <(git for-each-ref --format='%(refname:short)' refs/remotes refs/heads | grep -E '(^|/)(main|master)$' || true)
+    done < <(git for-each-ref --format='%(refname:short)' refs/remotes refs/heads)
 
     current="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD)"
     printf 'current: %s\tHEAD\n' "$current"
