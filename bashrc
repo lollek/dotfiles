@@ -12,11 +12,13 @@ set +o ignoreeof
 
 ## Add extra paths
 for p in \
+    "${HOME}/.cargo/bin" \
     "${HOME}/.local/bin" \
     "${HOME}/.rd/bin" \
     "${HOME}/bin" \
     "${HOME}/dotfiles/bin" \
-    "${HOME}/go/bin"
+    "${HOME}/go/bin" \
+    "/opt/homebrew/opt/rustup/bin"
 do
     if [[ -d "${p}" && ${PATH} != *"${p}"* ]]; then
         export PATH="${p}:${PATH}"
@@ -314,6 +316,5 @@ if type rg &> /dev/null; then
 fi
 
 maybe_source "$HOME/.rover/env"
-maybe_source "$HOME/.cargo/env"
 maybe_source "$HOME/dotfiles/scripts/z.sh"
 maybe_source "$HOME/dotfiles/bashrc.local"
