@@ -1,8 +1,11 @@
 [alias]
-	append = "commit --amend --no-edit"
 	cdiff = "diff --cached"
-	ignore = "!gi() { curl -Ls https://www.gitignore.io/api/$@ ;}; gi"
 	graph = "log --graph --decorate=full"
+	ignore = "!gi() { curl -Ls https://www.gitignore.io/api/$@ ;}; gi"
+	w = "worktree"
+	wa = "worktree add"
+	wl = "worktree list"
+	wr = "worktree remove"
 [branch]
 	sort = -committerdate
 [color]
@@ -11,9 +14,10 @@
 	gpgsign = true
 	verbose = true
 [core]
-	editor = vim
-	excludesfile = ~/.gitignore_global
 	autocrlf = input
+	editor = vim
+	excludesfile = /Users/olleai/dotfiles/git-global-ignore
+	hooksPath = /Users/olleai/dotfiles/git-hooks.local
 	pager = delta
 [diff]
 	algorithm = histogram
