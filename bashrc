@@ -264,6 +264,7 @@ fi
 if type git &> /dev/null; then
     maybe_source "$HOME/dotfiles/scripts/fzf-git.sh"
     alias s='git status -bs'
+    alias g='git'
 fi
 
 if type helm &> /dev/null; then
