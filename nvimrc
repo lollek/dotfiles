@@ -6,6 +6,10 @@ let mapleader = " "
 map <Leader>w :w<CR>
 map <Leader>q :q<CR>
 
+inoremap <M-q> ä
+inoremap <M-w> å
+inoremap <M-p> ö
+
 "" Hacky solution to pasting without yanking
 map <Leader>p "_dP
 
